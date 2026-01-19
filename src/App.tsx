@@ -1,0 +1,145 @@
+import React from 'react';
+import Layout from './components/Layout';
+import Hero from './components/Hero';
+import PostCard from './components/PostCard';
+import ProjectPreview from './components/ProjectPreview';
+import FriendLinks from './components/FriendLinks';
+import MessageBoard from './components/MessageBoard';
+import { motion } from 'framer-motion';
+
+import MusicPlayer from './components/MusicPlayer';
+import ClickEffect from './components/ClickEffect';
+
+const App: React.FC = () => {
+  const posts = [
+    {
+      title: "Building the Future with React 19",
+      excerpt: "Exploring the latest concurrent features and the new compiler that's changing how we think about rendering.",
+      date: "Jan 18, 2026",
+      category: "Development"
+    },
+    {
+      title: "The Art of Minimalist UI",
+      excerpt: "How less can be more when it comes to user experience. A deep dive into negative space and typography.",
+      date: "Jan 12, 2026",
+      category: "Design"
+    },
+    {
+      title: "Sustainable Web Design",
+      excerpt: "Why performance optimization isn't just for speed, but for the planet too. Practical tips for greener apps.",
+      date: "Jan 05, 2026",
+      category: "Sustainability"
+    }
+  ];
+
+  return (
+    <Layout>
+      <Hero />
+
+      {/* About Section */}
+      <section id="about" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem', alignItems: 'center' }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          style={{
+            height: '500px',
+            background: 'var(--bg-secondary)',
+            borderRadius: '40px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '8rem',
+            fontWeight: 800,
+            opacity: 0.05,
+            color: 'var(--text-primary)'
+          }}>
+            HELLO
+          </div>
+          <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '4rem',
+            textAlign: 'center'
+          }}>
+            <div style={{ width: '120px', height: '120px', background: 'var(--accent-primary)', borderRadius: '50%', marginBottom: '2rem' }}></div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Developer & Dreamer</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Based in the digital ether, crafting experiences that matter.</p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 style={{ fontSize: '3rem', marginBottom: '2rem' }}>Behind the <span className="text-gradient">Pixels</span></h2>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '1.5rem' }}>
+            I am a self-taught creator with a passion for blending the technical with the artistic.
+            My journey started with a curiosity for how things work, which evolved into a career
+            building how things feel.
+          </p>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+            When I'm not coding, you can find me exploring cityscapes with my camera or lost in
+            the pages of a sci-fi novel. I believe that every digital product should tell a story.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Blog Section */}
+      <section id="blog">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          marginBottom: '4rem'
+        }}>
+          <div>
+            <h2 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Latest <span className="text-gradient">Insights</span></h2>
+            <p style={{ color: 'var(--text-secondary)' }}>Thoughts on design, tech, and everything in between.</p>
+          </div>
+          <a href="#" style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>ALL POSTS →</a>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+          gap: '2.5rem'
+        }}>
+          {posts.map((post, index) => (
+            <motion.div
+              key={post.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <PostCard {...post} />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <ProjectPreview />
+
+      <FriendLinks />
+
+      <MessageBoard />
+      <ClickEffect />
+      <MusicPlayer />
+    </Layout>
+  );
+};
+
+export default App;
