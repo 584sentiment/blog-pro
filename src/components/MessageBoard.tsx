@@ -25,18 +25,22 @@ const MessageBoard: React.FC = () => {
     return (
         <section id="messages" style={{ background: 'var(--bg-secondary)' }}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Message <span className="text-gradient">Board</span></h2>
-                    <p style={{ color: 'var(--text-secondary)' }}>
+                <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>Message <span className="text-gradient">Board</span></h2>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                         Leave a mark, say hello, or share a thought.
                     </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '4rem' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                    gap: '2rem'
+                }}>
                     {/* Form */}
                     <div style={{
                         background: 'white',
-                        padding: '2.5rem',
+                        padding: '1.5rem',
                         borderRadius: '24px',
                         boxShadow: 'var(--shadow-md)',
                         alignSelf: 'start'

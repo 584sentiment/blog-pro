@@ -119,14 +119,19 @@ const Admin: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: '8rem 10% 4rem' }}>
+        <div style={{ padding: 'clamp(6rem, 15vh, 8rem) 5% 4rem' }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="glass"
-                style={{ padding: '3rem', borderRadius: '32px', maxWidth: '1000px', margin: '0 auto' }}
+                style={{
+                    padding: 'clamp(1.5rem, 5vw, 3rem)',
+                    borderRadius: '32px',
+                    maxWidth: '1000px',
+                    margin: '0 auto'
+                }}
             >
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>Create New <span className="text-gradient">Post</span></h1>
+                <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '2rem' }}>Create New <span className="text-gradient">Post</span></h1>
 
                 <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
                     <div>
@@ -140,7 +145,11 @@ const Admin: React.FC = () => {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                        gap: '1.5rem'
+                    }}>
                         <div>
                             <label style={labelStyle}>Category</label>
                             <select

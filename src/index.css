@@ -20,6 +20,11 @@
   --font-serif: 'Playfair Display', serif;
   --font-sans: 'Outfit', sans-serif;
 
+  /* Responsive spacing */
+  --section-padding: 6rem;
+  --container-width: 1200px;
+  --nav-height: 80px;
+
   font-family: var(--font-sans);
   line-height: 1.6;
   font-weight: 400;
@@ -123,14 +128,31 @@ ul {
 }
 
 section {
-  padding: 6rem 10%;
+  padding: var(--section-padding) 10%;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --section-padding: 4rem;
+  }
 }
 
 @media (max-width: 768px) {
   section {
-    padding: 4rem 5%;
+    padding: var(--section-padding) 5%;
+  }
+
+  .desktop-only {
+    display: none !important;
   }
 }
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
 /* Tiptap Editor Styles */
 .ProseMirror {
   outline: none;
@@ -152,7 +174,8 @@ section {
   font-weight: 600;
 }
 
-.ProseMirror ul, .ProseMirror ol {
+.ProseMirror ul,
+.ProseMirror ol {
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }

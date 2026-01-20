@@ -12,9 +12,9 @@ const FriendLinks: React.FC = () => {
     }, []);
     return (
         <section id="links" style={{ background: 'var(--bg-primary)' }}>
-            <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Corner of <span className="text-gradient">Friends</span></h2>
-                <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>Corner of <span className="text-gradient">Friends</span></h2>
+                <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '0.9rem' }}>
                     Interesting souls and creative spaces I've discovered along the way.
                 </p>
             </div>

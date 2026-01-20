@@ -23,13 +23,18 @@ const Home: React.FC = () => {
             <Hero />
 
             {/* About Section */}
-            <section id="about" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6rem', alignItems: 'center' }}>
+            <section id="about" style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '3rem',
+                alignItems: 'center'
+            }}>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     style={{
-                        height: '500px',
+                        height: 'clamp(300px, 50vh, 500px)',
                         background: 'var(--bg-secondary)',
                         borderRadius: '40px',
                         position: 'relative',
@@ -42,7 +47,7 @@ const Home: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '8rem',
+                        fontSize: 'clamp(4rem, 15vw, 8rem)',
                         fontWeight: 800,
                         opacity: 0.05,
                         color: 'var(--text-primary)'
@@ -56,12 +61,12 @@ const Home: React.FC = () => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '4rem',
+                        padding: '2rem',
                         textAlign: 'center'
                     }}>
-                        <div style={{ width: '120px', height: '120px', background: 'var(--accent-primary)', borderRadius: '50%', marginBottom: '2rem' }}></div>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Developer & Dreamer</h3>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Based in the digital ether, crafting experiences that matter.</p>
+                        <div style={{ width: '100px', height: '100px', background: 'var(--accent-primary)', borderRadius: '50%', marginBottom: '1.5rem' }}></div>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem' }}>Developer & Dreamer</h3>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Based in the digital ether, crafting experiences that matter.</p>
                     </div>
                 </motion.div>
 
@@ -70,13 +75,13 @@ const Home: React.FC = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                 >
-                    <h2 style={{ fontSize: '3rem', marginBottom: '2rem' }}>Behind the <span className="text-gradient">Pixels</span></h2>
-                    <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '1.5rem' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1.5rem' }}>Behind the <span className="text-gradient">Pixels</span></h2>
+                    <p style={{ fontSize: 'clamp(1rem, 4vw, 1.1rem)', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                         I am a self-taught creator with a passion for blending the technical with the artistic.
                         My journey started with a curiosity for how things work, which evolved into a career
                         building how things feel.
                     </p>
-                    <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                    <p style={{ fontSize: 'clamp(1rem, 4vw, 1.1rem)', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
                         When I'm not coding, you can find me exploring cityscapes with my camera or lost in
                         the pages of a sci-fi novel. I believe that every digital product should tell a story.
                     </p>
@@ -87,21 +92,21 @@ const Home: React.FC = () => {
             <section id="blog">
                 <div style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    marginBottom: '4rem'
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    marginBottom: '3rem'
                 }}>
-                    <div>
-                        <h2 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Latest <span className="text-gradient">Insights</span></h2>
-                        <p style={{ color: 'var(--text-secondary)' }}>Thoughts on design, tech, and everything in between.</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', margin: 0 }}>Latest <span className="text-gradient">Insights</span></h2>
+                        <a href="#" style={{ fontWeight: 600, color: 'var(--accent-primary)', fontSize: '0.9rem' }}>ALL POSTS →</a>
                     </div>
-                    <a href="#" style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>ALL POSTS →</a>
+                    <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>Thoughts on design, tech, and everything in between.</p>
                 </div>
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-                    gap: '2.5rem'
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '2rem'
                 }}>
                     {posts.map((post, index) => (
                         <motion.div

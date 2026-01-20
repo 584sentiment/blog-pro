@@ -34,8 +34,8 @@ const Hero: React.FC = () => {
 
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1.2fr 0.8fr',
-                gap: '4rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '2rem',
                 alignItems: 'center',
                 width: '100%',
                 maxWidth: '1200px'
@@ -65,17 +65,21 @@ const Hero: React.FC = () => {
                         Welcome to my creative space
                     </motion.div>
 
-                    <h1 style={{ fontSize: '4.5rem', marginBottom: '1.5rem', lineHeight: '1.1' }}>
+                    <h1 style={{
+                        fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
+                        marginBottom: '1.5rem',
+                        lineHeight: '1.1'
+                    }}>
                         Designing <span className="text-gradient">Digital</span> <br />
                         Experiences
                     </h1>
 
-                    <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', marginBottom: '2.5rem' }}>
+                    <p style={{ fontSize: 'clamp(1rem, 4vw, 1.2rem)', color: 'var(--text-secondary)', maxWidth: '600px', marginBottom: '2.5rem' }}>
                         I'm a multidisciplinary designer and developer focused on building beautiful,
                         functional, and user-centric products. Let's create something extraordinary together.
                     </p>
 
-                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -112,7 +116,7 @@ const Hero: React.FC = () => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    style={{ position: 'relative' }}
+                    style={{ position: 'relative', width: '100%' }}
                 >
                     <div style={{
                         position: 'relative',

@@ -14,17 +14,17 @@ const ProjectPreview: React.FC = () => {
     }, []);
     return (
         <section id="projects" style={{ background: 'var(--bg-secondary)' }}>
-            <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-                <h2 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Selected <span className="text-gradient">Projects</span></h2>
-                <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+            <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>Selected <span className="text-gradient">Projects</span></h2>
+                <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '0.9rem' }}>
                     A collection of projects where I explore the boundaries of design and technology.
                 </p>
             </div>
 
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                gap: '2.5rem'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem'
             }}>
                 {projects.map((project, index) => (
                     <motion.div

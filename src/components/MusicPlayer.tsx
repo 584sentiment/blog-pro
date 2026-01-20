@@ -95,27 +95,32 @@ const MusicPlayer: React.FC = () => {
                         exit={{ y: 50, opacity: 0 }}
                         style={{
                             position: 'fixed',
-                            bottom: '1.5rem',
+                            bottom: '1rem',
+                            left: '50%',
                             transform: 'translateX(-50%)',
                             zIndex: 2000,
                             pointerEvents: 'none',
                             textAlign: 'center',
                             width: '100%',
                             display: 'flex',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            padding: '0 1rem'
                         }}
                     >
                         <div className="glass" style={{
-                            padding: '0.6rem 2rem',
+                            padding: '0.5rem 1.5rem',
                             borderRadius: '30px',
-                            fontSize: '1rem',
+                            fontSize: '0.9rem',
                             fontWeight: 500,
                             color: 'var(--accent-primary)',
-                            background: 'rgba(255, 255, 255, 0.85)',
+                            background: 'rgba(255, 255, 255, 0.9)',
                             backdropFilter: 'blur(10px)',
                             boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
                             border: '1px solid rgba(0, 220, 130, 0.2)',
-                            maxWidth: '80%'
+                            maxWidth: '100%',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
                         }}>
                             {currentLyric}
                         </div>
@@ -129,17 +134,23 @@ const MusicPlayer: React.FC = () => {
                     setIsHovered(false);
                     setIsMenuOpen(false);
                 }}
+                // Mobile tap toggle
+                onClick={() => {
+                    if (window.innerWidth <= 768) {
+                        setIsHovered(!isHovered);
+                    }
+                }}
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 style={{
                     position: 'fixed',
-                    bottom: '2rem',
-                    right: '2rem',
-                    zIndex: 1001,
+                    bottom: '1rem',
+                    right: '1rem',
+                    zIndex: 2001,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'flex-end',
-                    padding: '1rem', // Bubble area
+                    padding: '0.5rem',
                 }}
             >
                 {/* Main Player Panel (Shows on Hover) */}

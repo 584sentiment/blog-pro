@@ -47,7 +47,7 @@ const PostDetail: React.FC = () => {
     }
 
     return (
-        <div style={{ padding: '8rem 10% 4rem' }}>
+        <div style={{ padding: 'clamp(6rem, 15vh, 8rem) 5% 4rem' }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -55,50 +55,62 @@ const PostDetail: React.FC = () => {
             >
                 <button
                     onClick={() => navigate('/')}
-                    style={{ ...backButtonStyle, marginBottom: '3rem' }}
+                    style={{ ...backButtonStyle, marginBottom: '2rem' }}
                 >
-                    <ArrowLeft size={20} /> Back
+                    <ArrowLeft size={18} /> Back
                 </button>
 
-                <header style={{ marginBottom: '4rem' }}>
-                    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <header style={{ marginBottom: '3rem' }}>
+                    <div style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        alignItems: 'center',
+                        marginBottom: '1.5rem',
+                        flexWrap: 'wrap'
+                    }}>
                         <span style={{
-                            fontSize: '0.8rem',
+                            fontSize: '0.75rem',
                             fontWeight: 700,
                             color: 'var(--accent-primary)',
                             textTransform: 'uppercase',
                             letterSpacing: '1px',
-                            padding: '0.4rem 1rem',
+                            padding: '0.4rem 0.8rem',
                             background: 'rgba(0, 220, 130, 0.1)',
                             borderRadius: '50px',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem'
+                            gap: '0.4rem'
                         }}>
-                            <Tag size={14} /> {post.category}
+                            <Tag size={12} /> {post.category}
                         </span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                            <Calendar size={16} />
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.85rem'
+                        }}>
+                            <Calendar size={14} />
                             {post.date}
                         </div>
                     </div>
 
                     <h1 style={{
-                        fontSize: '3.5rem',
-                        lineHeight: '1.2',
-                        marginBottom: '2rem',
+                        fontSize: 'clamp(2.2rem, 8vw, 3.5rem)',
+                        lineHeight: '1.1',
+                        marginBottom: '1.5rem',
                         fontWeight: 800
                     }}>
                         {post.title}
                     </h1>
 
                     <p style={{
-                        fontSize: '1.25rem',
+                        fontSize: 'clamp(1rem, 4vw, 1.25rem)',
                         color: 'var(--text-secondary)',
                         lineHeight: '1.6',
                         fontStyle: 'italic',
                         borderLeft: '4px solid var(--accent-primary)',
-                        paddingLeft: '1.5rem'
+                        paddingLeft: '1.2rem'
                     }}>
                         {post.excerpt}
                     </p>
@@ -107,7 +119,7 @@ const PostDetail: React.FC = () => {
                 <article
                     className="post-content ProseMirror"
                     style={{
-                        fontSize: '1.15rem',
+                        fontSize: 'clamp(1rem, 4vw, 1.15rem)',
                         lineHeight: '1.8',
                         color: 'var(--text-primary)'
                     }}

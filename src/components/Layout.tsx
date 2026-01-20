@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Twitter, Mail, Heart } from 'lucide-react';
+import { Github, Twitter, Mail, Heart, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,13 +25,14 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <div className="layout">
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass py-4' : 'bg-transparent py-6'}`}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass' : 'bg-transparent'}`}
         style={{
           position: 'fixed',
           top: 0,
           width: '100%',
           zIndex: 1000,
-          padding: isScrolled ? '1rem 5%' : '1.5rem 5%',
+          padding: '0 5%',
+          height: isScrolled ? '70px' : '90px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -40,19 +42,24 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="serif text-gradient"
-          style={{ fontSize: '1.8rem', fontWeight: 700, cursor: 'pointer' }}
+          style={{ fontSize: '1.8rem', fontWeight: 700, cursor: 'pointer', zIndex: 1001 }}
         >
-          FreshBlog
+          <Link to="/">FreshBlog</Link>
         </motion.div>
 
         {/* Desktop Nav */}
-        <ul className="desktop-nav" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
+        <ul className="desktop-nav" style={{
+          display: 'flex',
+          gap: '2.5rem',
+          alignItems: 'center',
+        }}>
           {navLinks.map((link, i) => (
             <motion.li
               key={link.name}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
+              className="desktop-only"
             >
               <Link to={link.href} style={{
                 fontSize: '0.9rem',
@@ -68,9 +75,55 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </ul>
 
         {/* Mobile Menu Toggle */}
-        <div className="mobile-toggle" style={{ display: 'none' }}>
-          {/* To be implemented if needed, but keeping it simple for now */}
+        <div
+          className="mobile-only"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{ cursor: 'pointer', zIndex: 1001, color: 'var(--text-primary)' }}
+        >
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <motion.div
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: isMenuOpen ? 1 : 0, x: isMenuOpen ? 0 : '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            width: '100%',
+            height: '100vh',
+            background: 'var(--bg-primary)',
+            zIndex: 1000,
+            padding: '8rem 10% 4rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2rem'
+          }}
+        >
+          {navLinks.map((link, i) => (
+            <Link
+              key={link.name}
+              to={link.href}
+              onClick={() => setIsMenuOpen(false)}
+              style={{
+                fontSize: '2rem',
+                fontWeight: 700,
+                color: 'var(--text-primary)'
+              }}
+            >
+              <motion.span
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: isMenuOpen ? 0 : 20, opacity: isMenuOpen ? 1 : 0 }}
+                transition={{ delay: i * 0.1 }}
+                style={{ display: 'block' }}
+              >
+                {link.name}
+              </motion.span>
+            </Link>
+          ))}
+        </motion.div>
       </nav>
 
       <main style={{ minHeight: '100vh' }}>
