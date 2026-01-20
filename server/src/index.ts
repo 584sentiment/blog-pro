@@ -1,13 +1,28 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
 const app = express();
 const port = process.env.PORT || 3001;
+
+// Prisma Client setup for Prisma 7 (requires driver adapter for 'client' engine)
+let prisma: PrismaClient;
+
+const dbUrl = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || 'file:./prisma/dev.db';
+const authToken = process.env.TURSO_AUTH_TOKEN;
+
+// LibSQL is used for both local SQLite files and Turso cloud
+const adapter = new PrismaLibSql({
+    url: dbUrl,
+    authToken: authToken,
+});
+
+// @ts-ignore
+prisma = new PrismaClient({ adapter });
 
 app.use(cors());
 app.use(express.json());
@@ -170,6 +185,11 @@ app.post('/api/songs', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// Only listen locally, Vercel will use the exported app
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    });
+}
+
+export default app;
