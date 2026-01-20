@@ -4,9 +4,12 @@ Since GitHub Pages only supports static sites, we are moving your blog to **Verc
 
 ## Step 1: Set up Turso Database
 1.  **Install Turso CLI**: [Follow instructions here](https://docs.turso.tech/cli/introduction).
-2.  **Create Database**: `turso db create my-blog`
-3.  **Import Local Data**: 
-    - Inside `server/prisma/`, run: `turso db import my-blog dev.db`
+2.  **Authenticate**: `turso auth login`
+3.  **Import Local Data (Create Database)**:
+    - Inside `server/prisma/`, first set the DB to WAL mode:
+      `sqlite3 dev.db "PRAGMA journal_mode=WAL;"`
+    - Then run: `turso db create my-blog --from-file dev.db`
+    - *Note: If you already created an empty `my-blog` database, delete it first using `turso db destroy my-blog`.*
 4.  **Get Connection Details**:
     - URL: `turso db show my-blog --url`
     - Token: `turso db tokens create my-blog`
