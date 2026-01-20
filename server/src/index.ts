@@ -9,20 +9,24 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Prisma Client setup for Prisma 7 (requires driver adapter for 'client' engine)
+// Prisma Client setup for Prisma 7
 let prisma: PrismaClient;
 
 const dbUrl = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || 'file:./prisma/dev.db';
 const authToken = process.env.TURSO_AUTH_TOKEN;
 
-// LibSQL is used for both local SQLite files and Turso cloud
-const adapter = new PrismaLibSql({
-    url: dbUrl,
-    authToken: authToken,
-});
+console.log('Initializing Prisma with URL:', dbUrl.replace(/:[^:@/]+@/, ':***@')); // Mask auth in logs
 
-// @ts-ignore
-prisma = new PrismaClient({ adapter });
+try {
+    const adapter = new PrismaLibSql({
+        url: dbUrl,
+        authToken: authToken,
+    });
+    // @ts-ignore
+    prisma = new PrismaClient({ adapter });
+} catch (err) {
+    console.error('Failed to initialize Prisma adapter:', err);
+}
 
 app.use(cors());
 app.use(express.json());
