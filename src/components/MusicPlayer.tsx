@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Music, List, Volume2 } from 'lucide-react';
+import { api } from '../services/api';
 
 interface Song {
     id: number;
@@ -10,55 +11,8 @@ interface Song {
     lyrics: { time: number; text: string }[];
 }
 
-/**
- * 💡 HOW TO ADD MORE SONGS:
- * 1. Add a new object to the `playlist` array below.
- * 2. `id`: A unique number.
- * 3. `title`: The song name.
- * 4. `artist`: The artist name.
- * 5. `url`: A link to your MP3 file (local or remote).
- * 6. `lyrics`: An array of { time: seconds, text: "lyric line" } for synchronization.
- */
-const playlist: Song[] = [
-    {
-        id: 1,
-        title: "Eco Valley",
-        artist: "Lofi Dreamer",
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        lyrics: [
-            { time: 0, text: "Welcome to the green valley..." },
-            { time: 5, text: "The wind whispers through the leaves." },
-            { time: 10, text: "Sunlight dancing on the water..." },
-            { time: 20, text: "Eco thoughts for a better world." },
-            { time: 30, text: "Silence of the morning mist..." },
-        ]
-    },
-    {
-        id: 2,
-        title: "Neon Horizon",
-        artist: "Cyber Beats",
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        lyrics: [
-            { time: 0, text: "Glow of the neon signs..." },
-            { time: 8, text: "Digital pulse in the midnight air." },
-            { time: 15, text: "Racing towards the infinite horizon." },
-            { time: 25, text: "Synthetic dreams and silicon hearts." },
-        ]
-    },
-    {
-        id: 3,
-        title: "Golden Hour",
-        artist: "Acoustic Soul",
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        lyrics: [
-            { time: 0, text: "Warmth of the setting sun..." },
-            { time: 12, text: "Shadows stretching across the floor." },
-            { time: 22, text: "Moments captured in amber light." },
-        ]
-    }
-];
-
 const MusicPlayer: React.FC = () => {
+    const [playlist, setPlaylist] = useState<Song[]>([]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -68,15 +22,22 @@ const MusicPlayer: React.FC = () => {
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
-    const currentSong = playlist[currentIdx];
 
     useEffect(() => {
-        if (isPlaying) {
+        api.getSongs().then(setPlaylist);
+    }, []);
+
+    useEffect(() => {
+        if (playlist.length > 0 && isPlaying) {
             audioRef.current?.play();
         } else {
             audioRef.current?.pause();
         }
-    }, [isPlaying, currentIdx]);
+    }, [isPlaying, currentIdx, playlist]);
+
+    if (playlist.length === 0) return null;
+
+    const currentSong = playlist[currentIdx];
 
     const onTimeUpdate = () => {
         if (audioRef.current) {
@@ -111,9 +72,9 @@ const MusicPlayer: React.FC = () => {
     };
 
     // Find current lyric
-    const currentLyric = [...currentSong.lyrics]
-        .reverse()
-        .find(l => currentTime >= l.time)?.text || "";
+    const currentLyric = currentSong?.lyrics
+        ? [...currentSong.lyrics].reverse().find(l => currentTime >= l.time)?.text || ""
+        : "";
 
     return (
         <>

@@ -131,3 +131,36 @@ section {
     padding: 4rem 5%;
   }
 }
+/* Tiptap Editor Styles */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin-bottom: 1rem;
+}
+
+.ProseMirror h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+}
+
+.ProseMirror ul, .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid var(--accent-primary);
+  padding-left: 1rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}

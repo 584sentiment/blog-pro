@@ -2,14 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link2 } from 'lucide-react';
 
-const friends = [
-    { name: "Alice's Garden", url: "#", description: "Design & Illustration", avatar: "A" },
-    { name: "Bob's Lab", url: "#", description: "Tech & Experiments", avatar: "B" },
-    { name: "Charlie's Desk", url: "#", description: "Thoughts on Philosophy", avatar: "C" },
-    { name: "Diana's Canvas", url: "#", description: "Digital Art Explorations", avatar: "D" },
-];
+import { api } from '../services/api';
 
 const FriendLinks: React.FC = () => {
+    const [friends, setFriends] = React.useState<any[]>([]);
+
+    React.useEffect(() => {
+        api.getFriends().then(setFriends);
+    }, []);
     return (
         <section id="links" style={{ background: 'var(--bg-primary)' }}>
             <div style={{ marginBottom: '4rem', textAlign: 'center' }}>

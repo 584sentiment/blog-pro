@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Twitter, Mail, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,11 +15,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Links', href: '#links' },
-    { name: 'Messages', href: '#messages' },
+    { name: 'Home', href: '/' },
+    { name: 'Blog', href: '/#blog' },
+    { name: 'Projects', href: '/#projects' },
+    { name: 'Messages', href: '/#messages' },
+    { name: 'Admin', href: '/admin' },
   ];
 
   return (
@@ -53,7 +54,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <a href={link.href} style={{
+              <Link to={link.href} style={{
                 fontSize: '0.9rem',
                 fontWeight: 600,
                 color: 'var(--text-primary)',
@@ -61,7 +62,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 letterSpacing: '0.5px'
               }} className="hover:opacity-100">
                 {link.name}
-              </a>
+              </Link>
             </motion.li>
           ))}
         </ul>
@@ -99,7 +100,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
               {navLinks.map(link => (
                 <li key={link.name}>
-                  <a href={link.href} style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{link.name}</a>
+                  <Link to={link.href} style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{link.name}</Link>
                 </li>
               ))}
             </ul>

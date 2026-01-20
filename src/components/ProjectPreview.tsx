@@ -2,34 +2,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github, Code } from 'lucide-react';
 
-const projects = [
-    {
-        title: "EcoTracker",
-        description: "A mobile application for tracking and reducing personal carbon footprint through gamification.",
-        tags: ["React Native", "Firebase", "D3.js"],
-        github: "#",
-        link: "#",
-        color: "var(--accent-primary)"
-    },
-    {
-        title: "Nova UI",
-        description: "A minimalist design system and component library built for rapid prototyping and accessibility.",
-        tags: ["TypeScript", "Tailwind", "Storybook"],
-        github: "#",
-        link: "#",
-        color: "var(--accent-tertiary)"
-    },
-    {
-        title: "Zenith Engine",
-        description: "A lightweight 2D game engine optimized for performance and ease of use in web browsers.",
-        tags: ["WebGL", "Rust", "Wasm"],
-        github: "#",
-        link: "#",
-        color: "var(--accent-secondary)"
-    }
-];
+import { api } from '../services/api';
 
 const ProjectPreview: React.FC = () => {
+    const [projects, setProjects] = React.useState<any[]>([]);
+
+    React.useEffect(() => {
+        api.getProjects().then(data => {
+            setProjects(data);
+        });
+    }, []);
     return (
         <section id="projects" style={{ background: 'var(--bg-secondary)' }}>
             <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
@@ -78,7 +60,7 @@ const ProjectPreview: React.FC = () => {
                             </p>
 
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '2rem' }}>
-                                {project.tags.map(tag => (
+                                {project.tags.map((tag: string) => (
                                     <span key={tag} style={{
                                         fontSize: '0.75rem',
                                         padding: '0.3rem 0.8rem',

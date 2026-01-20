@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  excerpt   String
+  content   String   @default("")
+  date      String
+  category  String
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  tags        String
+  github      String
+  link        String
+  color       String
+  createdAt   DateTime @default(now())
+}
+
+model Friend {
+  id          Int      @id @default(autoincrement())
+  name        String
+  url         String
+  description String
+  avatar      String
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String
+  date      String
+  createdAt DateTime @default(now())
+}
+
+model Song {
+  id        Int      @id @default(autoincrement())
+  title     String
+  artist    String
+  url       String
+  lyrics    String
+  createdAt DateTime @default(now())
+}

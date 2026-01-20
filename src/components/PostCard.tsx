@@ -1,17 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCardProps {
+    id: number;
     title: string;
     excerpt: string;
     date: string;
     category: string;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ title, excerpt, date, category }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, excerpt, date, category }) => {
+    const navigate = useNavigate();
     return (
         <motion.article
+            onClick={() => navigate(`/post/${id}`)}
             whileHover={{ y: -10 }}
             className="glass"
             style={{

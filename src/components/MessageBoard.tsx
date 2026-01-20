@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, MessageSquare } from 'lucide-react';
 
+import { api } from '../services/api';
+
 const MessageBoard: React.FC = () => {
-    const [messages, setMessages] = useState([
-        { id: 1, name: "Traveler", content: "Love the fresh design of this blog! Keep it up.", date: "2 Hours ago" },
-        { id: 2, name: "PixelArtist", content: "The animations are so smooth. What are you using?", date: "5 Hours ago" },
-    ]);
+    const [messages, setMessages] = useState<any[]>([]);
     const [name, setName] = useState("");
     const [msg, setMsg] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+        api.getMessages().then(setMessages);
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !msg) return;
-        const newMessage = {
-            id: Date.now(),
-            name,
-            content: msg,
-            date: "Just now"
-        };
-        setMessages([newMessage, ...messages]);
+        const result = await api.postMessage(name, msg);
+        setMessages([result, ...messages]);
         setName("");
         setMsg("");
     };
