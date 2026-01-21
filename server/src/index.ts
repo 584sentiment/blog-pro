@@ -3,11 +3,14 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || 'secret-salt-123';
 
 // Prisma Client setup for Prisma 7
 let prisma: PrismaClient;
@@ -36,25 +39,41 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
-// Auth Middleware
-const authMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+// Auth Middleware (Verifies JWT)
+const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const authHeader = req.headers.authorization;
 
-    if (authHeader === adminPassword) {
+    if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        // Token is usually sent as "Bearer <token>" or just "<token>"
+        const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+        jwt.verify(token, JWT_SECRET);
         next();
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
+    } catch (err) {
+        res.status(401).json({ error: 'Invalid or expired token' });
     }
 };
 
-// Auth Verification
-app.post('/api/auth/verify', (req, res) => {
+// Auth Verification (Login -> Returns JWT)
+app.post('/api/auth/verify', async (req, res) => {
     const { password } = req.body;
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
-    if (password === adminPassword) {
-        res.json({ success: true });
+    if (!password) {
+        return res.status(400).json({ error: 'Password is required' });
+    }
+
+    const isMatched = adminPassword.startsWith('$2')
+        ? await bcrypt.compare(password, adminPassword)
+        : password === adminPassword;
+
+    if (isMatched) {
+        // Sign a token that expires in 24 hours
+        const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '24h' });
+        res.json({ success: true, token });
     } else {
         res.status(401).json({ success: false, error: 'Invalid password' });
     }

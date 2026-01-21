@@ -4,7 +4,7 @@ const getHeaders = () => {
     const token = localStorage.getItem('admin_token');
     return {
         'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': token } : {})
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     };
 };
 
@@ -16,11 +16,13 @@ export const api = {
             body: JSON.stringify({ password })
         });
 
-        if (!res.ok) {
-            throw new Error('Invalid password');
+        const data = await res.json();
+
+        if (!res.ok || !data.token) {
+            throw new Error(data.error || 'Invalid password');
         }
 
-        localStorage.setItem('admin_token', password);
+        localStorage.setItem('admin_token', data.token);
         return { success: true };
     },
     logout: () => {
