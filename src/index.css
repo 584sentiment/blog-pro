@@ -187,3 +187,19 @@ section {
   margin-bottom: 1rem;
   opacity: 0.8;
 }
+
+/* Tiptap Placeholder */
+.tiptap p.is-editor-empty:first-child::before,
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tiptap:focus p.is-editor-empty:first-child::before,
+.ProseMirror-focused p.is-editor-empty:first-child::before {
+  opacity: 0;
+}

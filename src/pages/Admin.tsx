@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
 import { motion } from 'framer-motion';
 import { api } from '../services/api';
 import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save } from 'lucide-react';
@@ -90,8 +91,13 @@ const Admin: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const editor = useEditor({
-        extensions: [StarterKit],
-        content: '<p>开始书写你的故事...</p>',
+        extensions: [
+            StarterKit,
+            Placeholder.configure({
+                placeholder: '开始书写你的故事...',
+            }),
+        ],
+        content: '',
     });
 
     const handlePublish = async () => {
@@ -109,7 +115,7 @@ const Admin: React.FC = () => {
             alert('文章发布成功！');
             setTitle('');
             setExcerpt('');
-            editor.commands.setContent('<p>开始书写你的故事...</p>');
+            editor.commands.setContent('');
         } catch (error) {
             console.error(error);
             alert('发布失败');
