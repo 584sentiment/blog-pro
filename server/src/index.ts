@@ -116,6 +116,32 @@ app.post('/api/posts', authMiddleware, async (req, res) => {
     }
 });
 
+app.put('/api/posts/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, excerpt, content, category } = req.body;
+        const post = await prisma.post.update({
+            where: { id: parseInt(id as string) },
+            data: { title, excerpt, content, category }
+        });
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update post' });
+    }
+});
+
+app.delete('/api/posts/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.post.delete({
+            where: { id: parseInt(id as string) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete post' });
+    }
+});
+
 // Projects
 app.get('/api/projects', async (req, res) => {
     try {
@@ -139,7 +165,7 @@ app.post('/api/projects', authMiddleware, async (req, res) => {
             data: {
                 title,
                 description,
-                tags: Array.isArray(tags) ? tags.join(',') : tags,
+                tags: Array.isArray(tags) ? tags.join(',') : (typeof tags === 'string' ? tags : ''),
                 github,
                 link,
                 color

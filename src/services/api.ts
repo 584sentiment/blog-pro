@@ -71,5 +71,22 @@ export const api = {
         });
         if (res.status === 401) throw new Error('Unauthorized');
         return res.json();
+    },
+    updatePost: async (id: string | number, post: { title: string, excerpt: string, content: string, category: string }) => {
+        const res = await fetch(`${API_BASE}/posts/${id}`, {
+            method: 'PUT',
+            headers: getHeaders(),
+            body: JSON.stringify(post)
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
+    },
+    deletePost: async (id: string | number) => {
+        const res = await fetch(`${API_BASE}/posts/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
     }
 };

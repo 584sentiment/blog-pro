@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { api } from '../services/api';
-import { Calendar, ArrowLeft, Tag } from 'lucide-react';
+import { Calendar, ArrowLeft, Tag, Save } from 'lucide-react';
 
 const PostDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -95,14 +95,38 @@ const PostDetail: React.FC = () => {
                         </div>
                     </div>
 
-                    <h1 style={{
-                        fontSize: 'clamp(2.2rem, 8vw, 3.5rem)',
-                        lineHeight: '1.1',
-                        marginBottom: '1.5rem',
-                        fontWeight: 800
-                    }}>
-                        {post.title}
-                    </h1>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h1 style={{
+                            fontSize: 'clamp(2.2rem, 8vw, 3.5rem)',
+                            lineHeight: '1.1',
+                            marginBottom: '1.5rem',
+                            fontWeight: 800,
+                            flex: 1
+                        }}>
+                            {post.title}
+                        </h1>
+                        {api.isAuthenticated() && (
+                            <button
+                                onClick={() => navigate(`/admin?edit=${post.id}`)}
+                                style={{
+                                    background: 'var(--accent-primary)',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '0.6rem 1.2rem',
+                                    borderRadius: '12px',
+                                    fontWeight: 600,
+                                    fontSize: '0.9rem',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    transition: 'all 0.2s ease'
+                                }}
+                            >
+                                <Save size={16} /> 编辑
+                            </button>
+                        )}
+                    </div>
 
                     <p style={{
                         fontSize: 'clamp(1rem, 4vw, 1.25rem)',

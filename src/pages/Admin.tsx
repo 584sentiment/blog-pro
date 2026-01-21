@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { motion } from 'framer-motion';
 import { api } from '../services/api';
-import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save, LogOut, Trash2 } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
@@ -90,6 +90,9 @@ const Admin: React.FC = () => {
     const [excerpt, setExcerpt] = useState('');
     const [category, setCategory] = useState('Development');
     const [loading, setLoading] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [searchParams] = useSearchParams();
+    const editId = searchParams.get('edit');
     const navigate = useNavigate();
 
     const editor = useEditor({
@@ -102,27 +105,71 @@ const Admin: React.FC = () => {
         content: '',
     });
 
-    const handlePublish = async () => {
+    useEffect(() => {
+        if (editId && editor) {
+            setLoading(true);
+            api.getPost(editId).then(data => {
+                setTitle(data.title);
+                setExcerpt(data.excerpt);
+                setCategory(data.category);
+                editor.commands.setContent(data.content);
+                setLoading(false);
+            }).catch(err => {
+                console.error(err);
+                alert('加载文章失败');
+                setLoading(false);
+            });
+        }
+    }, [editId, editor]);
+
+    const handleSave = async () => {
         if (!title || !editor) return;
 
-        setLoading(true);
+        setSubmitLoading(true);
         try {
-            await api.postPost({
-                title,
-                excerpt,
-                category,
-                content: editor.getHTML(),
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
-            });
-            alert('文章发布成功！');
-            setTitle('');
-            setExcerpt('');
-            editor.commands.setContent('');
+            if (editId) {
+                await api.updatePost(editId, {
+                    title,
+                    excerpt,
+                    category,
+                    content: editor.getHTML()
+                });
+                alert('文章更新成功！');
+                navigate(`/post/${editId}`);
+            } else {
+                await api.postPost({
+                    title,
+                    excerpt,
+                    category,
+                    content: editor.getHTML(),
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+                });
+                alert('文章发布成功！');
+                setTitle('');
+                setExcerpt('');
+                editor.commands.setContent('');
+            }
         } catch (error) {
             console.error(error);
-            alert('发布失败');
+            alert('保存失败');
         } finally {
-            setLoading(false);
+            setSubmitLoading(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!editId || !window.confirm('确定要删除这篇文章吗？')) return;
+
+        setSubmitLoading(true);
+        try {
+            await api.deletePost(editId);
+            alert('文章已删除');
+            navigate('/');
+        } catch (error) {
+            console.error(error);
+            alert('删除失败');
+        } finally {
+            setSubmitLoading(false);
         }
     };
 
@@ -130,6 +177,14 @@ const Admin: React.FC = () => {
         api.logout();
         navigate('/login');
     };
+
+    if (loading) {
+        return (
+            <div style={{ padding: '10rem 10%', textAlign: 'center' }}>
+                <h2 className="text-gradient" style={{ fontSize: '2rem' }}>加载中...</h2>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 'clamp(6rem, 15vh, 8rem) 5% 4rem' }}>
@@ -145,26 +200,52 @@ const Admin: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', margin: 0 }}>创建新 <span className="text-gradient">文章</span></h1>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            padding: '0.6rem 1.2rem',
-                            borderRadius: '12px',
-                            border: '1px solid var(--glass-border)',
-                            background: 'rgba(255,255,255,0.5)',
-                            color: 'var(--text-primary)',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.6rem',
-                            fontSize: '0.9rem',
-                            fontWeight: 600
-                        }}
-                    >
-                        <LogOut size={18} />
-                        退出登录
-                    </button>
+                    <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', margin: 0 }}>
+                        {editId ? '编辑' : '创建新'} <span className="text-gradient">文章</span>
+                    </h1>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        {editId && (
+                            <button
+                                onClick={handleDelete}
+                                disabled={submitLoading}
+                                style={{
+                                    padding: '0.6rem 1.2rem',
+                                    borderRadius: '12px',
+                                    border: '1px solid #ff444433',
+                                    background: 'rgba(255, 68, 68, 0.1)',
+                                    color: '#ff4444',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.6rem',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 600
+                                }}
+                            >
+                                <Trash2 size={18} />
+                                删除
+                            </button>
+                        )}
+                        <button
+                            onClick={handleLogout}
+                            style={{
+                                padding: '0.6rem 1.2rem',
+                                borderRadius: '12px',
+                                border: '1px solid var(--glass-border)',
+                                background: 'rgba(255,255,255,0.5)',
+                                color: 'var(--text-primary)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.6rem',
+                                fontSize: '0.9rem',
+                                fontWeight: 600
+                            }}
+                        >
+                            <LogOut size={18} />
+                            退出登录
+                        </button>
+                    </div>
                 </div>
 
                 <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -224,8 +305,8 @@ const Admin: React.FC = () => {
                 </div>
 
                 <button
-                    onClick={handlePublish}
-                    disabled={loading}
+                    onClick={handleSave}
+                    disabled={submitLoading}
                     style={{
                         background: 'var(--accent-primary)',
                         color: 'white',
@@ -239,11 +320,11 @@ const Admin: React.FC = () => {
                         alignItems: 'center',
                         gap: '0.8rem',
                         transition: 'all 0.2s ease',
-                        opacity: loading ? 0.7 : 1
+                        opacity: submitLoading ? 0.7 : 1
                     }}
                 >
                     <Save size={20} />
-                    {loading ? 'Publishing...' : 'Publish Post'}
+                    {submitLoading ? 'Saving...' : (editId ? 'Update Post' : 'Publish Post')}
                 </button>
             </motion.div>
         </div>

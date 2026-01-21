@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight, Pencil } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 
 interface PostCardProps {
     id: number;
@@ -36,16 +37,41 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, excerpt, date, category 
                 alignItems: 'center',
                 marginBottom: '1.2rem'
             }}>
-                <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    color: 'var(--accent-primary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    padding: '0.3rem 0.8rem',
-                    background: 'rgba(0, 220, 130, 0.1)',
-                    borderRadius: '50px'
-                }}>{category}</span>
+                <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        color: 'var(--accent-primary)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        padding: '0.3rem 0.8rem',
+                        background: 'rgba(0, 220, 130, 0.1)',
+                        borderRadius: '50px'
+                    }}>{category}</span>
+                    {api.isAuthenticated() && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/admin?edit=${id}`);
+                            }}
+                            title="编辑文章"
+                            style={{
+                                border: 'none',
+                                background: 'transparent',
+                                color: 'var(--text-secondary)',
+                                cursor: 'pointer',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                transition: 'color 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent-primary)'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                        >
+                            <Pencil size={14} />
+                        </button>
+                    )}
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
                     <Calendar size={14} />
                     {date}
