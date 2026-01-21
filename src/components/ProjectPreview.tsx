@@ -15,9 +15,9 @@ const ProjectPreview: React.FC = () => {
     return (
         <section id="projects" style={{ background: 'var(--bg-secondary)' }}>
             <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-                <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>Selected <span className="text-gradient">Projects</span></h2>
+                <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>精选 <span className="text-gradient">项目</span></h2>
                 <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', fontSize: '0.9rem' }}>
-                    A collection of projects where I explore the boundaries of design and technology.
+                    在这里，我探索设计与技术之间的边界。
                 </p>
             </div>
 
@@ -75,10 +75,10 @@ const ProjectPreview: React.FC = () => {
 
                             <div style={{ display: 'flex', gap: '1.2rem', marginTop: 'auto' }}>
                                 <a href={project.github} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }} className="hover:text-primary">
-                                    <Github size={18} /> Code
+                                    <Github size={18} /> 代码
                                 </a>
                                 <a href={project.link} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }} className="hover:text-primary">
-                                    <ExternalLink size={18} /> Demo
+                                    <ExternalLink size={18} /> 演示
                                 </a>
                             </div>
                         </div>

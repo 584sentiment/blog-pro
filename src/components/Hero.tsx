@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
                         }}
                     >
                         <Sparkles size={14} />
-                        Welcome to my creative space
+                        欢迎来到我的创意空间
                     </motion.div>
 
                     <h1 style={{
@@ -70,13 +70,13 @@ const Hero: React.FC = () => {
                         marginBottom: '1.5rem',
                         lineHeight: '1.1'
                     }}>
-                        Designing <span className="text-gradient">Digital</span> <br />
-                        Experiences
+                        设计 <span className="text-gradient">数字</span> <br />
+                        体验之旅
                     </h1>
 
                     <p style={{ fontSize: 'clamp(1rem, 4vw, 1.2rem)', color: 'var(--text-secondary)', maxWidth: '600px', marginBottom: '2.5rem' }}>
-                        I'm a multidisciplinary designer and developer focused on building beautiful,
-                        functional, and user-centric products. Let's create something extraordinary together.
+                        我是一名专注于构建美观、实用且以用户为中心的产品。
+                        让我们一起创造一些非凡的东西。
                     </p>
 
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
                                 boxShadow: '0 10px 20px rgba(0, 220, 130, 0.2)'
                             }}
                         >
-                            View Projects <ArrowRight size={18} />
+                            查看项目 <ArrowRight size={18} />
                         </motion.button>
 
                         <a href="#blog" style={{
@@ -107,7 +107,7 @@ const Hero: React.FC = () => {
                             borderBottom: '2px solid transparent',
                             paddingBottom: '2px'
                         }} className="hover:border-accent-primary">
-                            Read Blog
+                            阅读博客
                         </a>
                     </div>
                 </motion.div>

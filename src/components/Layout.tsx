@@ -16,11 +16,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Blog', href: '/#blog' },
-    { name: 'Projects', href: '/#projects' },
-    { name: 'Messages', href: '/#messages' },
-    { name: 'Admin', href: '/admin' },
+    { name: '首页', href: '/' },
+    { name: '博客', href: '/#blog' },
+    { name: '项目', href: '/#projects' },
+    { name: '留言', href: '/#messages' },
+    { name: '管理', href: '/admin' },
   ];
 
   return (
@@ -143,13 +143,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           marginBottom: '4rem'
         }}>
           <div>
-            <h3 className="serif" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>FreshBlog</h3>
+            <h3 className="serif" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>清新博客</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              A space for creativity, code, and curious thoughts.
+              一个充满创意、代码和奇思妙想的空间。
             </p>
           </div>
           <div>
-            <h4 style={{ fontSize: '1rem', marginBottom: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Links</h4>
+            <h4 style={{ fontSize: '1rem', marginBottom: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>链接</h4>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
               {navLinks.map(link => (
                 <li key={link.name}>
@@ -159,7 +159,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </ul>
           </div>
           <div>
-            <h4 style={{ fontSize: '1rem', marginBottom: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Social</h4>
+            <h4 style={{ fontSize: '1rem', marginBottom: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>社交</h4>
             <div style={{ display: 'flex', gap: '1.5rem' }}>
               <a href="#" style={{ color: 'var(--text-secondary)' }}><Github size={20} /></a>
               <a href="#" style={{ color: 'var(--text-secondary)' }}><Twitter size={20} /></a>
@@ -177,11 +177,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           gap: '1.5rem'
         }}>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            © 2026 FreshBlog. Created with <Heart size={14} style={{ color: 'var(--accent-secondary)', display: 'inline' }} /> by Antigravity.
+            © 2026 清新博客. 由 Antigravity 用 <Heart size={14} style={{ color: 'var(--accent-secondary)', display: 'inline' }} /> 制作.
           </p>
           <div style={{ display: 'flex', gap: '2rem' }}>
-            <a href="#" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Privacy Policy</a>
-            <a href="#" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Terms of Service</a>
+            <a href="#" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>隐私政策</a>
+            <a href="#" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>服务条款</a>
           </div>
         </div>
       </footer>

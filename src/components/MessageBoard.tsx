@@ -26,9 +26,9 @@ const MessageBoard: React.FC = () => {
         <section id="messages" style={{ background: 'var(--bg-secondary)' }}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>Message <span className="text-gradient">Board</span></h2>
+                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1rem' }}>留言 <span className="text-gradient">板</span></h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                        Leave a mark, say hello, or share a thought.
+                        留下你的足迹，打个招呼，或者分享一个想法。
                     </p>
                 </div>
 
@@ -47,14 +47,14 @@ const MessageBoard: React.FC = () => {
                     }}>
                         <h3 style={{ fontSize: '1.2rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                             <MessageSquare size={20} className="text-accent-primary" />
-                            Write something
+                            写点什么
                         </h3>
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             <div style={{ position: 'relative' }}>
                                 <User size={18} style={{ position: 'absolute', left: '1rem', top: '1rem', color: 'var(--text-secondary)' }} />
                                 <input
                                     type="text"
-                                    placeholder="Your Name"
+                                    placeholder="你的名字"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     style={{
@@ -68,7 +68,7 @@ const MessageBoard: React.FC = () => {
                                 />
                             </div>
                             <textarea
-                                placeholder="Your message..."
+                                placeholder="留言内容..."
                                 value={msg}
                                 onChange={(e) => setMsg(e.target.value)}
                                 rows={4}
@@ -99,7 +99,7 @@ const MessageBoard: React.FC = () => {
                                     gap: '0.8rem'
                                 }}
                             >
-                                Send Message <Send size={18} />
+                                发送消息 <Send size={18} />
                             </motion.button>
                         </form>
                     </div>

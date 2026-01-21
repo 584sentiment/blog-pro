@@ -91,7 +91,7 @@ const Admin: React.FC = () => {
 
     const editor = useEditor({
         extensions: [StarterKit],
-        content: '<p>Start writing your story...</p>',
+        content: '<p>开始书写你的故事...</p>',
     });
 
     const handlePublish = async () => {
@@ -106,13 +106,13 @@ const Admin: React.FC = () => {
                 content: editor.getHTML(),
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
             });
-            alert('Post published successfully!');
+            alert('文章发布成功！');
             setTitle('');
             setExcerpt('');
-            editor.commands.setContent('<p>Start writing your story...</p>');
+            editor.commands.setContent('<p>开始书写你的故事...</p>');
         } catch (error) {
             console.error(error);
-            alert('Failed to publish post');
+            alert('发布失败');
         } finally {
             setLoading(false);
         }
@@ -131,16 +131,16 @@ const Admin: React.FC = () => {
                     margin: '0 auto'
                 }}
             >
-                <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '2rem' }}>Create New <span className="text-gradient">Post</span></h1>
+                <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '2rem' }}>创建新 <span className="text-gradient">文章</span></h1>
 
                 <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
                     <div>
-                        <label style={labelStyle}>Title</label>
+                        <label style={labelStyle}>标题</label>
                         <input
                             type="text"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
-                            placeholder="Post Title"
+                            placeholder="文章标题"
                             style={inputStyle}
                         />
                     </div>
@@ -151,7 +151,7 @@ const Admin: React.FC = () => {
                         gap: '1.5rem'
                     }}>
                         <div>
-                            <label style={labelStyle}>Category</label>
+                            <label style={labelStyle}>分类</label>
                             <select
                                 value={category}
                                 onChange={e => setCategory(e.target.value)}

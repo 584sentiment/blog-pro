@@ -27,7 +27,7 @@ const PostDetail: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '10rem 10%', textAlign: 'center' }}>
-                <h2 className="text-gradient" style={{ fontSize: '2rem' }}>Loading Story...</h2>
+                <h2 className="text-gradient" style={{ fontSize: '2rem' }}>故事载入中...</h2>
             </div>
         );
     }
@@ -57,7 +57,7 @@ const PostDetail: React.FC = () => {
                     onClick={() => navigate('/')}
                     style={{ ...backButtonStyle, marginBottom: '2rem' }}
                 >
-                    <ArrowLeft size={18} /> Back
+                    <ArrowLeft size={18} /> 返回
                 </button>
 
                 <header style={{ marginBottom: '3rem' }}>
@@ -136,7 +136,7 @@ const PostDetail: React.FC = () => {
                         onClick={() => navigate('/')}
                         style={backButtonStyle}
                     >
-                        <ArrowLeft size={20} /> Back to Home
+                        <ArrowLeft size={20} /> 返回首页
                     </button>
                 </footer>
             </motion.div>

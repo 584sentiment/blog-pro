@@ -65,8 +65,8 @@ const Home: React.FC = () => {
                         textAlign: 'center'
                     }}>
                         <div style={{ width: '100px', height: '100px', background: 'var(--accent-primary)', borderRadius: '50%', marginBottom: '1.5rem' }}></div>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem' }}>Developer & Dreamer</h3>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Based in the digital ether, crafting experiences that matter.</p>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem' }}>开发者 & 追梦人</h3>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>扎根数字世界，打造更有意义的体验。</p>
                     </div>
                 </motion.div>
 
@@ -75,15 +75,15 @@ const Home: React.FC = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                 >
-                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1.5rem' }}>Behind the <span className="text-gradient">Pixels</span></h2>
+                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '1.5rem' }}><span className="text-gradient">像素</span>背后的故事</h2>
                     <p style={{ fontSize: 'clamp(1rem, 4vw, 1.1rem)', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                        I am a self-taught creator with a passion for blending the technical with the artistic.
-                        My journey started with a curiosity for how things work, which evolved into a career
-                        building how things feel.
+                        我是一个自学成才的创作者，热衷于将技术与艺术融合。
+                        我的旅程源于对事物工作原理的好奇，后来演变成职业，
+                        去构建人们的感受。
                     </p>
                     <p style={{ fontSize: 'clamp(1rem, 4vw, 1.1rem)', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
-                        When I'm not coding, you can find me exploring cityscapes with my camera or lost in
-                        the pages of a sci-fi novel. I believe that every digital product should tell a story.
+                        在不写代码的时候，你会发现我在用相机探索城市，或者沉浸在
+                        科幻小说的世界里。我相信每一个数字产品都应该讲述一个故事。
                     </p>
                 </motion.div>
             </section>
@@ -97,10 +97,10 @@ const Home: React.FC = () => {
                     marginBottom: '3rem'
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                        <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', margin: 0 }}>Latest <span className="text-gradient">Insights</span></h2>
-                        <a href="#" style={{ fontWeight: 600, color: 'var(--accent-primary)', fontSize: '0.9rem' }}>ALL POSTS →</a>
+                        <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', margin: 0 }}>最新 <span className="text-gradient">见解</span></h2>
+                        <a href="#" style={{ fontWeight: 600, color: 'var(--accent-primary)', fontSize: '0.9rem' }}>查看全部 →</a>
                     </div>
-                    <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>Thoughts on design, tech, and everything in between.</p>
+                    <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>关于设计、技术以及介于两者之间的一切。 </p>
                 </div>
 
                 <div style={{
