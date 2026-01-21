@@ -36,6 +36,30 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+// Auth Middleware
+const authMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const authHeader = req.headers.authorization;
+
+    if (authHeader === adminPassword) {
+        next();
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+};
+
+// Auth Verification
+app.post('/api/auth/verify', (req, res) => {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+    if (password === adminPassword) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, error: 'Invalid password' });
+    }
+});
+
 // Blog Posts
 app.get('/api/posts', async (req, res) => {
     try {
@@ -61,7 +85,7 @@ app.get('/api/posts/:id', async (req, res) => {
     }
 });
 
-app.post('/api/posts', async (req, res) => {
+app.post('/api/posts', authMiddleware, async (req, res) => {
     try {
         const { title, excerpt, content, date, category } = req.body;
         const post = await prisma.post.create({
@@ -89,7 +113,7 @@ app.get('/api/projects', async (req, res) => {
     }
 });
 
-app.post('/api/projects', async (req, res) => {
+app.post('/api/projects', authMiddleware, async (req, res) => {
     try {
         const { title, description, tags, github, link, color } = req.body;
         const project = await prisma.project.create({
@@ -118,7 +142,7 @@ app.get('/api/friends', async (req, res) => {
     }
 });
 
-app.post('/api/friends', async (req, res) => {
+app.post('/api/friends', authMiddleware, async (req, res) => {
     try {
         const { name, url, description, avatar } = req.body;
         const friend = await prisma.friend.create({
@@ -172,7 +196,7 @@ app.get('/api/songs', async (req, res) => {
     }
 });
 
-app.post('/api/songs', async (req, res) => {
+app.post('/api/songs', authMiddleware, async (req, res) => {
     try {
         const { title, artist, url, lyrics } = req.body;
         const song = await prisma.song.create({

@@ -1,6 +1,34 @@
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '/api';
 
+const getHeaders = () => {
+    const token = localStorage.getItem('admin_token');
+    return {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': token } : {})
+    };
+};
+
 export const api = {
+    login: async (password: string) => {
+        const res = await fetch(`${API_BASE}/auth/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+
+        if (!res.ok) {
+            throw new Error('Invalid password');
+        }
+
+        localStorage.setItem('admin_token', password);
+        return { success: true };
+    },
+    logout: () => {
+        localStorage.removeItem('admin_token');
+    },
+    isAuthenticated: () => {
+        return !!localStorage.getItem('admin_token');
+    },
     getPosts: async () => {
         const res = await fetch(`${API_BASE}/posts`);
         return res.json();
@@ -36,9 +64,10 @@ export const api = {
     postPost: async (post: { title: string, excerpt: string, content: string, category: string, date: string }) => {
         const res = await fetch(`${API_BASE}/posts`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: getHeaders(),
             body: JSON.stringify(post)
         });
+        if (res.status === 401) throw new Error('Unauthorized');
         return res.json();
     }
 };

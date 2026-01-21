@@ -4,7 +4,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { motion } from 'framer-motion';
 import { api } from '../services/api';
-import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save } from 'lucide-react';
+import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
@@ -89,6 +90,7 @@ const Admin: React.FC = () => {
     const [excerpt, setExcerpt] = useState('');
     const [category, setCategory] = useState('Development');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const editor = useEditor({
         extensions: [
@@ -124,6 +126,11 @@ const Admin: React.FC = () => {
         }
     };
 
+    const handleLogout = () => {
+        api.logout();
+        navigate('/login');
+    };
+
     return (
         <div style={{ padding: 'clamp(6rem, 15vh, 8rem) 5% 4rem' }}>
             <motion.div
@@ -137,7 +144,28 @@ const Admin: React.FC = () => {
                     margin: '0 auto'
                 }}
             >
-                <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '2rem' }}>创建新 <span className="text-gradient">文章</span></h1>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <h1 style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', margin: 0 }}>创建新 <span className="text-gradient">文章</span></h1>
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            padding: '0.6rem 1.2rem',
+                            borderRadius: '12px',
+                            border: '1px solid var(--glass-border)',
+                            background: 'rgba(255,255,255,0.5)',
+                            color: 'var(--text-primary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.6rem',
+                            fontSize: '0.9rem',
+                            fontWeight: 600
+                        }}
+                    >
+                        <LogOut size={18} />
+                        退出登录
+                    </button>
+                </div>
 
                 <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '2rem' }}>
                     <div>

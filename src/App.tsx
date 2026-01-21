@@ -1,24 +1,40 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import Admin from './pages/Admin';
 import PostDetail from './pages/PostDetail';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
 import ScrollToTop from './components/ScrollToTop';
 import HashScrollHandler from './components/HashScrollHandler';
+import { api } from './services/api';
 
-const App: React.FC = () => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  if (!api.isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+};
+
+function App() {
   return (
     <Layout>
       <ScrollToTop />
       <HashScrollHandler />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Layout>
   );
-};
+}
 
 export default App;
