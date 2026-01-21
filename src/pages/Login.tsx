@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, LogIn } from 'lucide-react';
 import { api } from '../services/api';
+import { toast } from 'sonner';
 
 const Login: React.FC = () => {
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
         try {
             await api.login(password);
+            toast.success('登录成功！欢迎回来');
             navigate('/admin');
         } catch (err) {
-            setError('Invalid password');
+            toast.error('密码错误，请重试');
         } finally {
             setLoading(false);
         }
@@ -94,11 +94,6 @@ const Login: React.FC = () => {
                         />
                     </div>
 
-                    {error && (
-                        <p style={{ color: '#ff4444', fontSize: '0.9rem', marginBottom: '1rem' }}>
-                            {error}
-                        </p>
-                    )}
 
                     <button
                         type="submit"

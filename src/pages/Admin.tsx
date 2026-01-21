@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { api } from '../services/api';
 import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save, LogOut, Trash2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
@@ -116,7 +117,7 @@ const Admin: React.FC = () => {
                 setLoading(false);
             }).catch(err => {
                 console.error(err);
-                alert('加载文章失败');
+                toast.error('加载文章失败');
                 setLoading(false);
             });
         }
@@ -134,7 +135,7 @@ const Admin: React.FC = () => {
                     category,
                     content: editor.getHTML()
                 });
-                alert('文章更新成功！');
+                toast.success('文章更新成功！');
                 navigate(`/post/${editId}`);
             } else {
                 await api.postPost({
@@ -144,14 +145,14 @@ const Admin: React.FC = () => {
                     content: editor.getHTML(),
                     date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
                 });
-                alert('文章发布成功！');
+                toast.success('文章发布成功！');
                 setTitle('');
                 setExcerpt('');
                 editor.commands.setContent('');
             }
         } catch (error) {
             console.error(error);
-            alert('保存失败');
+            toast.error('保存失败');
         } finally {
             setSubmitLoading(false);
         }
@@ -163,11 +164,11 @@ const Admin: React.FC = () => {
         setSubmitLoading(true);
         try {
             await api.deletePost(editId);
-            alert('文章已删除');
+            toast.success('文章已删除');
             navigate('/');
         } catch (error) {
             console.error(error);
-            alert('删除失败');
+            toast.error('删除失败');
         } finally {
             setSubmitLoading(false);
         }

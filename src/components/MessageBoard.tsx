@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, MessageSquare } from 'lucide-react';
 
 import { api } from '../services/api';
+import { toast } from 'sonner';
 
 const MessageBoard: React.FC = () => {
     const [messages, setMessages] = useState<any[]>([]);
@@ -16,10 +17,16 @@ const MessageBoard: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !msg) return;
-        const result = await api.postMessage(name, msg);
-        setMessages([result, ...messages]);
-        setName("");
-        setMsg("");
+        toast.promise(api.postMessage(name, msg), {
+            loading: '正在发送留言...',
+            success: (result) => {
+                setMessages([result, ...messages]);
+                setName("");
+                setMsg("");
+                return '留言成功！感谢你的参与';
+            },
+            error: '发送失败，请稍后重试'
+        });
     };
 
     return (

@@ -6,6 +6,7 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import ScrollToTop from './components/ScrollToTop';
 import HashScrollHandler from './components/HashScrollHandler';
+import { Toaster } from 'sonner';
 import { api } from './services/api';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -18,6 +19,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <Layout>
+      <Toaster position="top-center" richColors />
       <ScrollToTop />
       <HashScrollHandler />
       <Routes>
