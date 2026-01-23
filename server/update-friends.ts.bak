@@ -1,0 +1,33 @@
+import { PrismaClient } from '@prisma/client';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const dbUrl = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || 'file:./prisma/dev.db';
+const authToken = process.env.TURSO_AUTH_TOKEN;
+
+const adapter = new PrismaLibSql({
+    url: dbUrl,
+    authToken: authToken,
+});
+
+// @ts-ignore
+const prisma = new PrismaClient({ adapter });
+
+async function updateExistingFriends() {
+    // Update all existing friends to be approved
+    const result = await prisma.friend.updateMany({
+        where: {
+            approved: false
+        },
+        data: {
+            approved: true
+        }
+    });
+
+    console.log(`Updated ${result.count} existing friend links to approved status`);
+    await prisma.$disconnect();
+}
+
+updateExistingFriends().catch(console.error);
