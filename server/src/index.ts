@@ -5,8 +5,15 @@ import { PrismaLibSql } from '@prisma/adapter-libsql';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+// ES modules 中获取 __dirname 的方式
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 加载 server/.env 文件
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -15,7 +22,7 @@ const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || 'secr
 // Prisma Client setup for Prisma 7
 let prisma: PrismaClient;
 
-const dbUrl = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL || 'file:./prisma/dev.db';
+const dbUrl = process.env.DATABASE_URL || 'file:./prisma/dev.db'; // 暂时使用本地数据库，Turso 缺少 approved 列
 const authToken = process.env.TURSO_AUTH_TOKEN;
 
 console.log('Initializing Prisma with URL:', dbUrl.replace(/:[^:@/]+@/, ':***@')); // Mask auth in logs
@@ -180,22 +187,81 @@ app.post('/api/projects', authMiddleware, async (req, res) => {
 // Friends
 app.get('/api/friends', async (req, res) => {
     try {
-        const friends = await prisma.friend.findMany();
+        // Only return approved friend links for public display
+        const friends = await prisma.friend.findMany({
+            where: { approved: true },
+            orderBy: { createdAt: 'desc' }
+        });
         res.json(friends);
     } catch (error) {
+        console.error('Error fetching friends:', error);
         res.status(500).json({ error: 'Failed to fetch friends' });
     }
 });
 
+// Get pending friend link applications (admin only)
+app.get('/api/friends/pending', authMiddleware, async (req, res) => {
+    try {
+        const pending = await prisma.friend.findMany({
+            where: { approved: false },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(pending);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch pending applications' });
+    }
+});
+
+// Public endpoint for friend link applications
+app.post('/api/friends/apply', async (req, res) => {
+    try {
+        const { name, url, description, avatar } = req.body;
+        const friend = await prisma.friend.create({
+            data: { name, url, description, avatar, approved: false }
+        });
+        res.json(friend);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to submit application' });
+    }
+});
+
+// Admin endpoint to create approved friend link
 app.post('/api/friends', authMiddleware, async (req, res) => {
     try {
         const { name, url, description, avatar } = req.body;
         const friend = await prisma.friend.create({
-            data: { name, url, description, avatar }
+            data: { name, url, description, avatar, approved: true }
         });
         res.json(friend);
     } catch (error) {
         res.status(500).json({ error: 'Failed to create friend link' });
+    }
+});
+
+// Approve friend link application
+app.put('/api/friends/:id/approve', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const friend = await prisma.friend.update({
+            where: { id: parseInt(id) },
+            data: { approved: true }
+        });
+        res.json(friend);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to approve friend link' });
+    }
+});
+
+// Delete friend link
+app.delete('/api/friends/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.friend.delete({
+            where: { id: parseInt(id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete friend link' });
     }
 });
 
@@ -224,6 +290,19 @@ app.post('/api/messages', async (req, res) => {
         res.json(message);
     } catch (error) {
         res.status(500).json({ error: 'Failed to post message' });
+    }
+});
+
+// Delete message (admin only)
+app.delete('/api/messages/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.message.delete({
+            where: { id: parseInt(id as string) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete message' });
     }
 });
 

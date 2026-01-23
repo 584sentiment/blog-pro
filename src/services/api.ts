@@ -88,5 +88,44 @@ export const api = {
         });
         if (res.status === 401) throw new Error('Unauthorized');
         return res.json();
+    },
+    deleteMessage: async (id: number) => {
+        const res = await fetch(`${API_BASE}/messages/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
+    },
+    applyFriendLink: async (data: { name: string, url: string, description: string, avatar: string }) => {
+        const res = await fetch(`${API_BASE}/friends/apply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return res.json();
+    },
+    getPendingFriendLinks: async () => {
+        const res = await fetch(`${API_BASE}/friends/pending`, {
+            headers: getHeaders()
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
+    },
+    approveFriendLink: async (id: number) => {
+        const res = await fetch(`${API_BASE}/friends/${id}/approve`, {
+            method: 'PUT',
+            headers: getHeaders()
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
+    },
+    deleteFriendLink: async (id: number) => {
+        const res = await fetch(`${API_BASE}/friends/${id}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+        if (res.status === 401) throw new Error('Unauthorized');
+        return res.json();
     }
 };

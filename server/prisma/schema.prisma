@@ -33,6 +33,7 @@ model Friend {
   url         String
   description String
   avatar      String
+  approved    Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
 

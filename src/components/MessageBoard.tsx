@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, MessageSquare } from 'lucide-react';
+import { Send, User, MessageSquare, Trash2 } from 'lucide-react';
 
 import { api } from '../services/api';
 import { toast } from 'sonner';
@@ -9,9 +9,11 @@ const MessageBoard: React.FC = () => {
     const [messages, setMessages] = useState<any[]>([]);
     const [name, setName] = useState("");
     const [msg, setMsg] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         api.getMessages().then(setMessages);
+        setIsAuthenticated(api.isAuthenticated());
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,6 +28,18 @@ const MessageBoard: React.FC = () => {
                 return '留言成功！感谢你的参与';
             },
             error: '发送失败，请稍后重试'
+        });
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('确定要删除这条留言吗？')) return;
+        toast.promise(api.deleteMessage(id), {
+            loading: '正在删除...',
+            success: () => {
+                setMessages(messages.filter(m => m.id !== id));
+                return '留言已删除';
+            },
+            error: '删除失败，请稍后重试'
         });
     };
 
@@ -128,9 +142,33 @@ const MessageBoard: React.FC = () => {
                                         border: '1px solid rgba(0,0,0,0.03)'
                                     }}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
-                                        <span style={{ fontWeight: 700, fontSize: '1rem' }}>{message.name}</span>
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{message.date}</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1 }}>
+                                            <span style={{ fontWeight: 700, fontSize: '1rem' }}>{message.name}</span>
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{message.date}</span>
+                                        </div>
+                                        {isAuthenticated && (
+                                            <motion.button
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
+                                                onClick={() => handleDelete(message.id)}
+                                                style={{
+                                                    marginLeft: '1rem',
+                                                    padding: '0.5rem',
+                                                    background: 'transparent',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: '#ef4444',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderRadius: '8px'
+                                                }}
+                                                title="删除留言"
+                                            >
+                                                <Trash2 size={18} />
+                                            </motion.button>
+                                        )}
                                     </div>
                                     <p style={{ color: 'var(--text-primary)', fontSize: '0.95rem', lineHeight: '1.5' }}>
                                         {message.content}
