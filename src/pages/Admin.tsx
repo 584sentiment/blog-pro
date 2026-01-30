@@ -2,42 +2,92 @@ import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import HorizontalRule from '@tiptap/extension-horizontal-rule';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import { TextStyle } from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import Highlight from '@tiptap/extension-highlight';
 import { motion } from 'framer-motion';
 import { api } from '../services/api';
-import { Bold, Italic, List, ListOrdered, Quote, Heading1, Heading2, Save, LogOut, Trash2 } from 'lucide-react';
+import {
+    Bold, Italic, Underline as UnderlineIcon, Strikethrough,
+    List, ListOrdered, Quote, Heading1, Heading2, Heading3,
+    Save, LogOut, Trash2, Link as LinkIcon, Undo, Redo,
+    Code, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight,
+    Highlighter, Minus
+} from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { common, createLowlight } from 'lowlight';
+import { marked } from 'marked';
 
 const MenuBar = ({ editor }: { editor: any }) => {
     if (!editor) return null;
 
+    const addLink = () => {
+        const url = window.prompt('输入链接地址:');
+        if (url) {
+            editor.chain().focus().setLink({ href: url }).run();
+        }
+    };
+
+    const addImage = () => {
+        const url = window.prompt('输入图片地址:');
+        if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+        }
+    };
+
+    const setColor = (color: string) => {
+        editor.chain().focus().setColor(color).run();
+    };
+
+    const setHighlight = () => {
+        editor.chain().focus().toggleHighlight({ color: '#fef08a' }).run();
+    };
+
     return (
         <div className="toolbar" style={{
             display: 'flex',
-            gap: '0.5rem',
+            gap: '0.3rem',
             padding: '0.8rem',
             borderBottom: '1px solid var(--glass-border)',
             background: 'rgba(255,255,255,0.5)',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            alignItems: 'center'
         }}>
+            {/* 撤销/重做 */}
+            <div style={dividerStyle} />
             <button
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editor.isActive('bold') ? 'active' : ''}
-                style={buttonStyle(editor.isActive('bold'))}
+                onClick={() => editor.chain().focus().undo().run()}
+                disabled={!editor.can().undo()}
+                style={buttonStyle(false)}
+                title="撤销"
             >
-                <Bold size={18} />
+                <Undo size={18} />
             </button>
             <button
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={editor.isActive('italic') ? 'active' : ''}
-                style={buttonStyle(editor.isActive('italic'))}
+                onClick={() => editor.chain().focus().redo().run()}
+                disabled={!editor.can().redo()}
+                style={buttonStyle(false)}
+                title="重做"
             >
-                <Italic size={18} />
+                <Redo size={18} />
             </button>
+
+            {/* 标题 */}
+            <div style={dividerStyle} />
             <button
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                 className={editor.isActive('heading', { level: 1 }) ? 'active' : ''}
                 style={buttonStyle(editor.isActive('heading', { level: 1 }))}
+                title="一级标题"
             >
                 <Heading1 size={18} />
             </button>
@@ -45,13 +95,132 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
                 className={editor.isActive('heading', { level: 2 }) ? 'active' : ''}
                 style={buttonStyle(editor.isActive('heading', { level: 2 }))}
+                title="二级标题"
             >
                 <Heading2 size={18} />
             </button>
             <button
+                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                className={editor.isActive('heading', { level: 3 }) ? 'active' : ''}
+                style={buttonStyle(editor.isActive('heading', { level: 3 }))}
+                title="三级标题"
+            >
+                <Heading3 size={18} />
+            </button>
+
+            {/* 文本格式 */}
+            <div style={dividerStyle} />
+            <button
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                className={editor.isActive('bold') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('bold'))}
+                title="加粗"
+            >
+                <Bold size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                className={editor.isActive('italic') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('italic'))}
+                title="斜体"
+            >
+                <Italic size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleUnderline().run()}
+                className={editor.isActive('underline') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('underline'))}
+                title="下划线"
+            >
+                <UnderlineIcon size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                className={editor.isActive('strike') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('strike'))}
+                title="删除线"
+            >
+                <Strikethrough size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleCode().run()}
+                className={editor.isActive('code') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('code'))}
+                title="行内代码"
+            >
+                <Code size={18} />
+            </button>
+
+            {/* 颜色和高亮 */}
+            <div style={dividerStyle} />
+            <button
+                onClick={() => setColor('#ef4444')}
+                style={{...colorButtonStyle, background: '#ef4444'}}
+                title="红色"
+            />
+            <button
+                onClick={() => setColor('#3b82f6')}
+                style={{...colorButtonStyle, background: '#3b82f6'}}
+                title="蓝色"
+            />
+            <button
+                onClick={() => setColor('#22c55e')}
+                style={{...colorButtonStyle, background: '#22c55e'}}
+                title="绿色"
+            />
+            <button
+                onClick={() => setColor('#eab308')}
+                style={{...colorButtonStyle, background: '#eab308'}}
+                title="黄色"
+            />
+            <button
+                onClick={() => setColor('#000000')}
+                style={{...colorButtonStyle, background: '#000000'}}
+                title="黑色"
+            />
+            <button
+                onClick={setHighlight}
+                className={editor.isActive('highlight') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('highlight'))}
+                title="高亮"
+            >
+                <Highlighter size={18} />
+            </button>
+
+            {/* 对齐 */}
+            <div style={dividerStyle} />
+            <button
+                onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                className={editor.isActive({ textAlign: 'left' }) ? 'active' : ''}
+                style={buttonStyle(editor.isActive({ textAlign: 'left' }))}
+                title="左对齐"
+            >
+                <AlignLeft size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                className={editor.isActive({ textAlign: 'center' }) ? 'active' : ''}
+                style={buttonStyle(editor.isActive({ textAlign: 'center' }))}
+                title="居中对齐"
+            >
+                <AlignCenter size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                className={editor.isActive({ textAlign: 'right' }) ? 'active' : ''}
+                style={buttonStyle(editor.isActive({ textAlign: 'right' }))}
+                title="右对齐"
+            >
+                <AlignRight size={18} />
+            </button>
+
+            {/* 列表 */}
+            <div style={dividerStyle} />
+            <button
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={editor.isActive('bulletList') ? 'active' : ''}
                 style={buttonStyle(editor.isActive('bulletList'))}
+                title="无序列表"
             >
                 <List size={18} />
             </button>
@@ -59,15 +228,61 @@ const MenuBar = ({ editor }: { editor: any }) => {
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 className={editor.isActive('orderedList') ? 'active' : ''}
                 style={buttonStyle(editor.isActive('orderedList'))}
+                title="有序列表"
             >
                 <ListOrdered size={18} />
             </button>
             <button
+                onClick={() => editor.chain().focus().toggleTaskList().run()}
+                className={editor.isActive('taskList') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('taskList'))}
+                title="任务列表"
+            >
+                <List size={18} style={{ textDecoration: 'line-through' }} />
+            </button>
+
+            {/* 其他元素 */}
+            <div style={dividerStyle} />
+            <button
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
                 className={editor.isActive('blockquote') ? 'active' : ''}
                 style={buttonStyle(editor.isActive('blockquote'))}
+                title="引用"
             >
                 <Quote size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                className={editor.isActive('codeBlock') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('codeBlock'))}
+                title="代码块"
+            >
+                <Code size={18} />
+            </button>
+            <button
+                onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                style={buttonStyle(false)}
+                title="分割线"
+            >
+                <Minus size={18} />
+            </button>
+
+            {/* 链接和图片 */}
+            <div style={dividerStyle} />
+            <button
+                onClick={addLink}
+                className={editor.isActive('link') ? 'active' : ''}
+                style={buttonStyle(editor.isActive('link'))}
+                title="插入链接"
+            >
+                <LinkIcon size={18} />
+            </button>
+            <button
+                onClick={addImage}
+                style={buttonStyle(false)}
+                title="插入图片"
+            >
+                <ImageIcon size={18} />
             </button>
         </div>
     );
@@ -83,8 +298,31 @@ const buttonStyle = (active: boolean) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s ease',
+    ':hover': {
+        background: 'rgba(0,0,0,0.05)'
+    }
 });
+
+const colorButtonStyle = {
+    width: '24px',
+    height: '24px',
+    borderRadius: '4px',
+    border: '1px solid rgba(0,0,0,0.1)',
+    cursor: 'pointer',
+    padding: 0,
+    transition: 'transform 0.2s ease',
+    ':hover': {
+        transform: 'scale(1.1)'
+    }
+};
+
+const dividerStyle = {
+    width: '1px',
+    height: '24px',
+    background: 'var(--glass-border)',
+    margin: '0 0.3rem'
+};
 
 const Admin: React.FC = () => {
     const [title, setTitle] = useState('');
@@ -98,15 +336,126 @@ const Admin: React.FC = () => {
     const editId = searchParams.get('edit');
     const navigate = useNavigate();
 
+    const lowlight = createLowlight(common);
+
+    // 配置 marked 选项
+    marked.setOptions({
+        breaks: true, // 支持单个换行符转换为 <br>
+        gfm: true, // 支持 GitHub Flavored Markdown
+    });
+
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                codeBlock: false, // 禁用默认代码块，使用 CodeBlockLowlight
+            }),
+            Underline,
+            Link.configure({
+                openOnClick: false,
+                HTMLAttributes: {
+                    class: 'text-blue-500 underline',
+                },
+            }),
+            Image.configure({
+                HTMLAttributes: {
+                    class: 'max-w-full h-auto rounded-lg',
+                },
+            }),
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
+            CodeBlockLowlight.configure({
+                lowlight,
+                HTMLAttributes: {
+                    class: 'bg-gray-100 rounded-lg p-4 my-4 overflow-x-auto',
+                },
+            }),
+            HorizontalRule,
+            TaskList,
+            TaskItem.configure({
+                nested: true,
+            }),
+            TextStyle,
+            Color,
+            Highlight.configure({
+                multicolor: true,
+            }),
             Placeholder.configure({
                 placeholder: '开始书写你的故事...',
             }),
         ],
         content: '',
+        editorProps: {
+            attributes: {
+                class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl mx-auto focus:outline-none',
+            },
+        },
     });
+
+    // 添加 markdown 粘贴处理
+    useEffect(() => {
+        if (!editor) return;
+
+        const handlePaste = (event: Event) => {
+            const clipboardEvent = event as ClipboardEvent;
+            const clipboardData = clipboardEvent.clipboardData;
+            if (!clipboardData) return;
+
+            // 获取纯文本内容和 HTML 内容
+            const text = clipboardData.getData('text/plain');
+            const html = clipboardData.getData('text/html');
+
+            // 如果有 HTML 内容（从网页或编辑器复制），使用默认粘贴行为
+            if (html && html.trim().length > 0) {
+                return;
+            }
+
+            // 如果没有文本内容，使用默认行为
+            if (!text || text.trim().length === 0) {
+                return;
+            }
+
+            // 简化的 markdown 检测 - 只要包含任何常见 markdown 符号就尝试转换
+            const hasMarkdownSymbols = /[#*`\[\]~>_-]/.test(text);
+
+            if (hasMarkdownSymbols) {
+                // 阻止默认粘贴行为
+                event.preventDefault();
+
+                // 使用 setTimeout 确保在当前事件循环之外执行
+                setTimeout(() => {
+                    try {
+                        // 使用 marked 将 markdown 转换为 HTML
+                        const convertedHtml = marked.parse(text) as string;
+
+                        // 使用 TipTap 的 insertContent 命令插入 HTML
+                        editor.commands.insertContent(convertedHtml, {
+                            parseOptions: {
+                                preserveWhitespace: 'full',
+                            },
+                        });
+                    } catch (error) {
+                        console.error('Markdown parsing error:', error);
+                        // 如果解析失败，插入纯文本
+                        editor.commands.insertContent(text);
+                    }
+                }, 0);
+            }
+            // 如果不是 markdown，让默认粘贴行为处理
+        };
+
+        // 获取编辑器 DOM 元素
+        const editorElement = document.querySelector('.ProseMirror');
+        if (editorElement) {
+            editorElement.addEventListener('paste', handlePaste as EventListener);
+        }
+
+        return () => {
+            if (editorElement) {
+                editorElement.removeEventListener('paste', handlePaste as EventListener);
+            }
+        };
+    }, [editor]);
 
     useEffect(() => {
         if (editId && editor) {

@@ -15,6 +15,12 @@ const __dirname = path.dirname(__filename);
 // 加载 server/.env 文件
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
+// 辅助函数：安全地解析 id 参数
+const parseIdParam = (id: string | string[]): number => {
+    const idStr = typeof id === 'string' ? id : id[0];
+    return parseInt(idStr);
+};
+
 const app = express();
 const port = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || 'secret-salt-123';
@@ -102,7 +108,7 @@ app.get('/api/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const post = await prisma.post.findUnique({
-            where: { id: parseInt(id) }
+            where: { id: parseIdParam(id) }
         });
         if (!post) return res.status(404).json({ error: 'Post not found' });
         res.json(post);
@@ -128,7 +134,7 @@ app.put('/api/posts/:id', authMiddleware, async (req, res) => {
         const { id } = req.params;
         const { title, excerpt, content, category } = req.body;
         const post = await prisma.post.update({
-            where: { id: parseInt(id as string) },
+            where: { id: parseIdParam(id) },
             data: { title, excerpt, content, category }
         });
         res.json(post);
@@ -141,7 +147,7 @@ app.delete('/api/posts/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         await prisma.post.delete({
-            where: { id: parseInt(id as string) }
+            where: { id: parseIdParam(id) }
         });
         res.json({ success: true });
     } catch (error) {
@@ -243,7 +249,7 @@ app.put('/api/friends/:id/approve', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const friend = await prisma.friend.update({
-            where: { id: parseInt(id) },
+            where: { id: parseIdParam(id) },
             data: { approved: true }
         });
         res.json(friend);
@@ -257,7 +263,7 @@ app.delete('/api/friends/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         await prisma.friend.delete({
-            where: { id: parseInt(id) }
+            where: { id: parseIdParam(id) }
         });
         res.json({ success: true });
     } catch (error) {
@@ -298,7 +304,7 @@ app.delete('/api/messages/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         await prisma.message.delete({
-            where: { id: parseInt(id as string) }
+            where: { id: parseIdParam(id) }
         });
         res.json({ success: true });
     } catch (error) {
