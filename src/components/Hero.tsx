@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            paddingTop: '6rem',
+            paddingTop: '50px',
             position: 'relative',
             overflow: 'hidden'
         }}>
