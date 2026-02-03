@@ -145,6 +145,15 @@ section {
   .desktop-only {
     display: none !important;
   }
+
+  /* 移动端浮动按钮样式优化 */
+  .mobile-only[style*="position: fixed"] {
+    touch-action: manipulation;
+  }
+
+  .mobile-only[style*="position: fixed"]:active {
+    transform: scale(0.95);
+  }
 }
 
 @media (min-width: 769px) {

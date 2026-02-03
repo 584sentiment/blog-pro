@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
-import { Calendar, ArrowLeft, Tag, Save, List } from 'lucide-react';
+import { Calendar, ArrowLeft, Tag, Save, List, X } from 'lucide-react';
 
 interface Heading {
     id: string;
@@ -17,6 +17,7 @@ const PostDetail: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [headings, setHeadings] = useState<Heading[]>([]);
     const [activeHeading, setActiveHeading] = useState<string>('');
+    const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 
     // 提取标题 - 使用 useLayoutEffect 在每次渲染后都重新设置
@@ -153,71 +154,205 @@ const PostDetail: React.FC = () => {
 
     return (
         <div style={{ position: 'relative' }}>
-            {/* 固定目录导航 */}
+            {/* 桌面端固定目录导航 */}
             {headings.length > 0 && (
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="toc-container"
-                    style={{
-                        position: 'fixed',
-                        right: '2rem',
-                        top: '50%',
-                        marginTop: '-150px', // 假设目录最大高度约300px
-                        width: '220px',
-                        maxHeight: '60vh',
-                        overflowY: 'auto',
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(12px)',
-                        borderRadius: '16px',
-                        padding: '1rem',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
-                        zIndex: 100,
-                        border: '1px solid var(--glass-border)'
-                    }}
-                >
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        marginBottom: '1rem',
-                        paddingBottom: '0.8rem',
-                        borderBottom: '1px solid var(--glass-border)',
-                        fontWeight: 600,
-                        color: 'var(--text-primary)'
-                    }}>
-                        <List size={16} />
-                        目录
-                    </div>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                        {headings.map((heading) => (
-                            <li key={heading.id} style={{ marginBottom: '0.5rem', listStyle: 'none' }}>
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        console.log('Button clicked, heading ID:', heading.id);
-                                        scrollToHeading(heading.id);
-                                    }}
-                                    className="toc-item"
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="toc-container desktop-only"
+                        style={{
+                            position: 'fixed',
+                            right: '2rem',
+                            top: '50%',
+                            marginTop: '-150px',
+                            width: '220px',
+                            maxHeight: '60vh',
+                            overflowY: 'auto',
+                            background: 'rgba(255, 255, 255, 0.95)',
+                            backdropFilter: 'blur(12px)',
+                            borderRadius: '16px',
+                            padding: '1rem',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                            zIndex: 100,
+                            border: '1px solid var(--glass-border)'
+                        }}
+                    >
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            marginBottom: '1rem',
+                            paddingBottom: '0.8rem',
+                            borderBottom: '1px solid var(--glass-border)',
+                            fontWeight: 600,
+                            color: 'var(--text-primary)'
+                        }}>
+                            <List size={16} />
+                            目录
+                        </div>
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                            {headings.map((heading) => (
+                                <li key={heading.id} style={{ marginBottom: '0.5rem', listStyle: 'none' }}>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            scrollToHeading(heading.id);
+                                        }}
+                                        className="toc-item"
+                                        style={{
+                                            ...tocItemStyle,
+                                            paddingLeft: `${(heading.level - 1) * 0.8}rem`,
+                                            fontWeight: activeHeading === heading.id ? 600 : 400,
+                                            color: activeHeading === heading.id ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                                            borderLeft: activeHeading === heading.id ? '2px solid var(--accent-primary)' : '2px solid transparent',
+                                            pointerEvents: 'auto',
+                                            position: 'relative',
+                                            zIndex: 1
+                                        }}
+                                    >
+                                        {heading.text}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </motion.div>
+
+                    {/* 移动端浮动按钮 */}
+                    <button
+                        className="mobile-only"
+                        onClick={() => setIsMobileTocOpen(true)}
+                        style={{
+                            position: 'fixed',
+                            bottom: '2rem',
+                            right: '1.5rem',
+                            width: '56px',
+                            height: '56px',
+                            borderRadius: '50%',
+                            background: 'var(--accent-primary)',
+                            color: 'white',
+                            border: 'none',
+                            boxShadow: '0 4px 12px rgba(0, 220, 130, 0.4)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 1000,
+                            transition: 'all 0.3s ease'
+                        }}
+                        aria-label="打开目录"
+                    >
+                        <List size={24} />
+                    </button>
+
+                    {/* 移动端目录抽屉 */}
+                    <AnimatePresence>
+                        {isMobileTocOpen && (
+                            <>
+                                {/* 遮罩层 */}
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setIsMobileTocOpen(false)}
                                     style={{
-                                        ...tocItemStyle,
-                                        paddingLeft: `${(heading.level - 1) * 0.8}rem`,
-                                        fontWeight: activeHeading === heading.id ? 600 : 400,
-                                        color: activeHeading === heading.id ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                                        borderLeft: activeHeading === heading.id ? '2px solid var(--accent-primary)' : '2px solid transparent',
-                                        pointerEvents: 'auto',
-                                        position: 'relative',
-                                        zIndex: 1
+                                        position: 'fixed',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        background: 'rgba(0, 0, 0, 0.5)',
+                                        zIndex: 1000
+                                    }}
+                                />
+                                {/* 目录抽屉 */}
+                                <motion.div
+                                    initial={{ y: '100%' }}
+                                    animate={{ y: 0 }}
+                                    exit={{ y: '100%' }}
+                                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                    className="mobile-only"
+                                    style={{
+                                        position: 'fixed',
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        maxHeight: '70vh',
+                                        background: 'white',
+                                        borderRadius: '24px 24px 0 0',
+                                        padding: '1.5rem',
+                                        zIndex: 1001,
+                                        boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+                                        overflowY: 'auto'
                                     }}
                                 >
-                                    {heading.text}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </motion.div>
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '1.5rem',
+                                        paddingBottom: '1rem',
+                                        borderBottom: '1px solid var(--glass-border)'
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.5rem',
+                                            fontWeight: 600,
+                                            fontSize: '1.1rem',
+                                            color: 'var(--text-primary)'
+                                        }}>
+                                            <List size={20} />
+                                            目录
+                                        </div>
+                                        <button
+                                            onClick={() => setIsMobileTocOpen(false)}
+                                            style={{
+                                                background: 'transparent',
+                                                border: 'none',
+                                                padding: '0.5rem',
+                                                cursor: 'pointer',
+                                                color: 'var(--text-secondary)',
+                                                borderRadius: '8px'
+                                            }}
+                                            aria-label="关闭目录"
+                                        >
+                                            <X size={24} />
+                                        </button>
+                                    </div>
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                                        {headings.map((heading) => (
+                                            <li key={heading.id} style={{ marginBottom: '0.75rem' }}>
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        scrollToHeading(heading.id);
+                                                        setIsMobileTocOpen(false);
+                                                    }}
+                                                    style={{
+                                                        ...tocItemStyle,
+                                                        paddingLeft: `${(heading.level - 1) * 1}rem`,
+                                                        fontWeight: activeHeading === heading.id ? 600 : 400,
+                                                        color: activeHeading === heading.id ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                                                        borderLeft: activeHeading === heading.id ? '3px solid var(--accent-primary)' : '3px solid transparent',
+                                                        fontSize: '1rem',
+                                                        padding: '0.75rem 1rem'
+                                                    }}
+                                                >
+                                                    {heading.text}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </>
             )}
 
             <div style={{ padding: '50px 5% 4rem', maxWidth: '900px', margin: '0 auto' }}>
