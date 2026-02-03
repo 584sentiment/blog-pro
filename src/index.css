@@ -21,7 +21,7 @@
   --font-sans: 'Outfit', sans-serif;
 
   /* Responsive spacing */
-  --section-padding: 6rem;
+  --section-padding: 4rem;
   --container-width: 1200px;
   --nav-height: 80px;
 
@@ -133,7 +133,7 @@ section {
 
 @media (max-width: 1024px) {
   :root {
-    --section-padding: 4rem;
+    --section-padding: 3rem;
   }
 }
 
@@ -154,6 +154,41 @@ section {
 }
 
 /* Tiptap Editor Styles */
+
+/* Editor Toolbar */
+.toolbar {
+  outline: none;
+}
+
+.toolbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* Color Button Fix */
+.toolbar .color-btn {
+  min-width: 24px !important;
+  min-height: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+.toolbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toolbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.toolbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 .ProseMirror {
   outline: none;
   min-height: 400px;
@@ -332,4 +367,41 @@ section {
   color: #94a3b8;
   pointer-events: none;
   height: 0;
+}
+
+/* 目录导航样式 */
+.toc-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 220, 130, 0.3) transparent;
+}
+
+.toc-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toc-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 220, 130, 0.3);
+  border-radius: 10px;
+}
+
+.toc-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 220, 130, 0.5);
+}
+
+.toc-item {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1;
+}
+
+.toc-item:hover {
+  background: rgba(0, 220, 130, 0.1) !important;
+}
+
+.toc-item:active {
+  transform: 'scale(0.98)';
 }

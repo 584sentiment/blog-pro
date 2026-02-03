@@ -55,15 +55,18 @@ const MenuBar = ({ editor }: { editor: any }) => {
     return (
         <div className="toolbar" style={{
             display: 'flex',
-            gap: '0.3rem',
-            padding: '0.8rem',
-            borderBottom: '1px solid var(--glass-border)',
-            background: 'rgba(255,255,255,0.5)',
-            flexWrap: 'wrap',
-            alignItems: 'center'
+            gap: '0.5rem',
+            border: 'none',
+            borderBottom: '1px solid rgba(0,0,0,0.08)',
+            background: 'transparent',
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(0,0,0,0.2) transparent'
         }}>
             {/* 撤销/重做 */}
-            <div style={dividerStyle} />
             <button
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
@@ -154,28 +157,54 @@ const MenuBar = ({ editor }: { editor: any }) => {
             {/* 颜色和高亮 */}
             <div style={dividerStyle} />
             <button
+                className="color-btn"
                 onClick={() => setColor('#ef4444')}
-                style={{...colorButtonStyle, background: '#ef4444'}}
+                style={{
+                    ...colorButtonStyle,
+                    background: '#ef4444',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                }}
                 title="红色"
             />
             <button
+                className="color-btn"
                 onClick={() => setColor('#3b82f6')}
-                style={{...colorButtonStyle, background: '#3b82f6'}}
+                style={{
+                    ...colorButtonStyle,
+                    background: '#3b82f6',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                }}
                 title="蓝色"
             />
             <button
+                className="color-btn"
                 onClick={() => setColor('#22c55e')}
-                style={{...colorButtonStyle, background: '#22c55e'}}
+                style={{
+                    ...colorButtonStyle,
+                    background: '#22c55e',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                }}
                 title="绿色"
             />
             <button
+                className="color-btn"
                 onClick={() => setColor('#eab308')}
-                style={{...colorButtonStyle, background: '#eab308'}}
+                style={{
+                    ...colorButtonStyle,
+                    background: '#eab308',
+                    border: '1px solid rgba(0,0,0,0.15)'
+                }}
                 title="黄色"
             />
             <button
+                className="color-btn"
                 onClick={() => setColor('#000000')}
-                style={{...colorButtonStyle, background: '#000000'}}
+                style={{
+                    ...colorButtonStyle,
+                    background: '#000000',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    boxShadow: '0 0 0 1px rgba(0,0,0,0.1)'
+                }}
                 title="黑色"
             />
             <button
@@ -305,23 +334,33 @@ const buttonStyle = (active: boolean) => ({
 });
 
 const colorButtonStyle = {
+    minWidth: '24px',
+    minHeight: '24px',
     width: '24px',
     height: '24px',
     borderRadius: '4px',
-    border: '1px solid rgba(0,0,0,0.1)',
+    border: '1px solid rgba(0,0,0,0.2)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
     cursor: 'pointer',
     padding: 0,
-    transition: 'transform 0.2s ease',
+    margin: 0,
+    boxSizing: 'border-box',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    transition: 'all 0.2s ease',
     ':hover': {
-        transform: 'scale(1.1)'
+        transform: 'scale(1.1)',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
     }
 };
 
 const dividerStyle = {
     width: '1px',
-    height: '24px',
-    background: 'var(--glass-border)',
-    margin: '0 0.3rem'
+    height: '20px',
+    background: 'rgba(0,0,0,0.1)',
+    flexShrink: 0
 };
 
 const Admin: React.FC = () => {
@@ -571,7 +610,7 @@ const Admin: React.FC = () => {
     }
 
     return (
-        <div style={{ padding: 'clamp(6rem, 15vh, 8rem) 5% 4rem' }}>
+        <div style={{ padding: '50px 5% 4rem' }}>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -721,7 +760,7 @@ const Admin: React.FC = () => {
                             border: '1px solid var(--glass-border)',
                             borderRadius: '16px',
                             overflow: 'hidden',
-                            background: 'white',
+                            background: 'rgba(255,255,255,0.8)',
                             marginBottom: '2rem'
                         }}>
                             <MenuBar editor={editor} />

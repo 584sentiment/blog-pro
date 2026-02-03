@@ -191,7 +191,7 @@ app.post('/api/projects', authMiddleware, async (req, res) => {
 });
 
 // Friends
-app.get('/api/friends', async (req, res) => {
+app.get('/api/friends', async (req: express.Request, res: express.Response) => {
     try {
         // Only return approved friend links for public display
         const friends = await prisma.friend.findMany({
@@ -206,7 +206,7 @@ app.get('/api/friends', async (req, res) => {
 });
 
 // Get pending friend link applications (admin only)
-app.get('/api/friends/pending', authMiddleware, async (req, res) => {
+app.get('/api/friends/pending', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const pending = await prisma.friend.findMany({
             where: { approved: false },
@@ -219,7 +219,7 @@ app.get('/api/friends/pending', authMiddleware, async (req, res) => {
 });
 
 // Public endpoint for friend link applications
-app.post('/api/friends/apply', async (req, res) => {
+app.post('/api/friends/apply', async (req: express.Request, res: express.Response) => {
     try {
         const { name, url, description, avatar } = req.body;
         const friend = await prisma.friend.create({
@@ -232,7 +232,7 @@ app.post('/api/friends/apply', async (req, res) => {
 });
 
 // Admin endpoint to create approved friend link
-app.post('/api/friends', authMiddleware, async (req, res) => {
+app.post('/api/friends', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { name, url, description, avatar } = req.body;
         const friend = await prisma.friend.create({
@@ -245,7 +245,7 @@ app.post('/api/friends', authMiddleware, async (req, res) => {
 });
 
 // Approve friend link application
-app.put('/api/friends/:id/approve', authMiddleware, async (req, res) => {
+app.put('/api/friends/:id/approve', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const friend = await prisma.friend.update({
@@ -259,7 +259,7 @@ app.put('/api/friends/:id/approve', authMiddleware, async (req, res) => {
 });
 
 // Delete friend link
-app.delete('/api/friends/:id', authMiddleware, async (req, res) => {
+app.delete('/api/friends/:id', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         await prisma.friend.delete({
@@ -272,7 +272,7 @@ app.delete('/api/friends/:id', authMiddleware, async (req, res) => {
 });
 
 // Message Board
-app.get('/api/messages', async (req, res) => {
+app.get('/api/messages', async (req: express.Request, res: express.Response) => {
     try {
         const messages = await prisma.message.findMany({
             orderBy: { createdAt: 'desc' }
@@ -283,7 +283,7 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
-app.post('/api/messages', async (req, res) => {
+app.post('/api/messages', async (req: express.Request, res: express.Response) => {
     try {
         const { name, content } = req.body;
         const message = await prisma.message.create({
@@ -300,7 +300,7 @@ app.post('/api/messages', async (req, res) => {
 });
 
 // Delete message (admin only)
-app.delete('/api/messages/:id', authMiddleware, async (req, res) => {
+app.delete('/api/messages/:id', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         await prisma.message.delete({
@@ -313,7 +313,7 @@ app.delete('/api/messages/:id', authMiddleware, async (req, res) => {
 });
 
 // Music Player
-app.get('/api/songs', async (req, res) => {
+app.get('/api/songs', async (req: express.Request, res: express.Response) => {
     try {
         const songs = await prisma.song.findMany();
         const transformed = songs.map((s: any) => ({
@@ -326,7 +326,7 @@ app.get('/api/songs', async (req, res) => {
     }
 });
 
-app.post('/api/songs', authMiddleware, async (req, res) => {
+app.post('/api/songs', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { title, artist, url, lyrics } = req.body;
         const song = await prisma.song.create({
