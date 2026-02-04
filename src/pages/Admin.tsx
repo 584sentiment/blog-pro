@@ -333,7 +333,7 @@ const buttonStyle = (active: boolean) => ({
     }
 });
 
-const colorButtonStyle = {
+const colorButtonStyle: React.CSSProperties = {
     minWidth: '24px',
     minHeight: '24px',
     width: '24px',
@@ -344,16 +344,12 @@ const colorButtonStyle = {
     cursor: 'pointer',
     padding: 0,
     margin: 0,
-    boxSizing: 'border-box',
+    boxSizing: 'border-box' as 'border-box',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
-    transition: 'all 0.2s ease',
-    ':hover': {
-        transform: 'scale(1.1)',
-        boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
-    }
+    transition: 'all 0.2s ease'
 };
 
 const dividerStyle = {

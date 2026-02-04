@@ -48,7 +48,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req: express.Request, res: express.Response) => {
     res.json({ status: 'ok' });
 });
 
@@ -71,7 +71,7 @@ const authMiddleware = async (req: express.Request, res: express.Response, next:
 };
 
 // Auth Verification (Login -> Returns JWT)
-app.post('/api/auth/verify', async (req, res) => {
+app.post('/api/auth/verify', async (req: express.Request, res: express.Response) => {
     const { password } = req.body;
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
@@ -93,7 +93,7 @@ app.post('/api/auth/verify', async (req, res) => {
 });
 
 // Blog Posts
-app.get('/api/posts', async (req, res) => {
+app.get('/api/posts', async (req: express.Request, res: express.Response) => {
     try {
         const posts = await prisma.post.findMany({
             orderBy: { createdAt: 'desc' }
@@ -104,7 +104,7 @@ app.get('/api/posts', async (req, res) => {
     }
 });
 
-app.get('/api/posts/:id', async (req, res) => {
+app.get('/api/posts/:id', async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const post = await prisma.post.findUnique({
@@ -117,7 +117,7 @@ app.get('/api/posts/:id', async (req, res) => {
     }
 });
 
-app.post('/api/posts', authMiddleware, async (req, res) => {
+app.post('/api/posts', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { title, excerpt, content, date, category } = req.body;
         const post = await prisma.post.create({
@@ -129,7 +129,7 @@ app.post('/api/posts', authMiddleware, async (req, res) => {
     }
 });
 
-app.put('/api/posts/:id', authMiddleware, async (req, res) => {
+app.put('/api/posts/:id', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         const { title, excerpt, content, category } = req.body;
@@ -143,7 +143,7 @@ app.put('/api/posts/:id', authMiddleware, async (req, res) => {
     }
 });
 
-app.delete('/api/posts/:id', authMiddleware, async (req, res) => {
+app.delete('/api/posts/:id', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         await prisma.post.delete({
@@ -156,7 +156,7 @@ app.delete('/api/posts/:id', authMiddleware, async (req, res) => {
 });
 
 // Projects
-app.get('/api/projects', async (req, res) => {
+app.get('/api/projects', async (req: express.Request, res: express.Response) => {
     try {
         const projects = await prisma.project.findMany({
             orderBy: { createdAt: 'desc' }
@@ -171,7 +171,7 @@ app.get('/api/projects', async (req, res) => {
     }
 });
 
-app.post('/api/projects', authMiddleware, async (req, res) => {
+app.post('/api/projects', authMiddleware, async (req: express.Request, res: express.Response) => {
     try {
         const { title, description, tags, github, link, color } = req.body;
         const project = await prisma.project.create({
